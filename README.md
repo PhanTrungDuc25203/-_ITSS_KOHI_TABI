@@ -2,7 +2,7 @@
 日本語　アイティエスエスのプロジェクトである　KOHI TABI と　言う。
 
 # hướng dẫn clone dự án base và chạy trên localhost:<số cổng mà mn muốn>
-- trước hết, đảm bảo đang sử dụng phiên bản NodeJS 14.18.0. Nếu muốn cài nhiều phiên bản thì hãy cài nvm (node version manager) (chi tiết xem trên mạng)
+- trước hết, đảm bảo đang sử dụng phiên bản NodeJS 14.18.0. Nếu muốn cài nhiều phiên bản trên cùng một máy thì hãy cài nvm (node version manager) (chi tiết xem trên mạng)
 - clone dự án
 - tạo DB mysql (Đức sử dụng phpadmin)
 - tạo một file .env vói nội dung tương tự file .env.example (copy từ .env.example sang .env) và điền các thông số mà mn dùng để kết nối với DB trên máy của mình theo hướng dẫn sau:
