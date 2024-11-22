@@ -1,2 +1,2 @@
-# -_ITSS_KOHI_TABI
+# NIHONGO_ITSS_KOHI_TABI
 日本語　アイティエスエスのプロジェクトである　KOHI TABI と　言う。
