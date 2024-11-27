@@ -11,6 +11,9 @@ let initWebRoutes = (app) => {
 
     router.post('/api/login', userController.handleLogin);
     //những gì ở phía React thì phân biệt bằng các thêm tiền tố /api/ vào trước các route
+
+    //user-preference api
+    router.post('/api/save-user-preference', userController.saveUserPreference);
     return app.use("/", router);
 }
 module.exports = initWebRoutes;

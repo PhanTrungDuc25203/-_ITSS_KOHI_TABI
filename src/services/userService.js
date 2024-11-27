@@ -63,6 +63,43 @@ let checkUserEmail = (userEmail) => {
     })
 }
 
+let saveUserPreferenceService = (userPreferenceData) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            if (!userPreferenceData || !userPreferenceData.email || !userPreferenceData.stylePreference) {
+                resolve({
+                    errCode: 1,
+                    errMessage: 'Missing required parameter!',
+                })
+            } else {
+                console.log("Check data: ", userPreferenceData);
+                let user = await db.User.findOne({
+                    where: {
+                        email: userPreferenceData.email,
+                    }
+                })
+
+                console.log("check user: ", user);
+
+                if (user) {
+                    await db.Favorite_style.create({
+                        uid: user.id,
+                        style: userPreferenceData.stylePreference,
+                    })
+                }
+
+                resolve({
+                    errCode: 0,
+                    errMessage: 'Save preference for user successfully!',
+                })
+            }
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
 module.exports = {
     handleLoginService: handleLoginService,
+    saveUserPreferenceService: saveUserPreferenceService,
 }

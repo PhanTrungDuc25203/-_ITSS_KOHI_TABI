@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
          * The `models/index` file will call this method automatically.
          */
         static associate(models) {
-            
+
         }
     }
     Include_amenity.init({
@@ -30,6 +30,7 @@ module.exports = (sequelize, DataTypes) => {
     }, {
         sequelize,
         modelName: 'Include_amenity',
+        timestamps: false,
         charset: 'utf8mb4',
         collate: 'utf8mb4_unicode_ci',
     });

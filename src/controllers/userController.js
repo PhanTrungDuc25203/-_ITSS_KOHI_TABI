@@ -18,6 +18,20 @@ let handleLogin = async (req, res) => {
     })
 }
 
+let saveUserPreference = async (req, res) => {
+    try {
+        let response = await userService.saveUserPreferenceService(req.body);
+        return res.status(200).json(response);
+    } catch (e) {
+        console.log(e);
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: `Save user's preference error!`
+        })
+    }
+}
+
 module.exports = {
     handleLogin: handleLogin,
+    saveUserPreference: saveUserPreference,
 }

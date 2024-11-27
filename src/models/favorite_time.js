@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
          * The `models/index` file will call this method automatically.
          */
         static associate(models) {
-            
+
         }
     }
     Favorite_time.init({
@@ -25,6 +25,7 @@ module.exports = (sequelize, DataTypes) => {
     }, {
         sequelize,
         modelName: 'Favorite_time',
+        timestamps: false,
         charset: 'utf8mb4',
         collate: 'utf8mb4_unicode_ci',
     });

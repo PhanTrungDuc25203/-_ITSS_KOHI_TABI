@@ -18,8 +18,6 @@ module.exports = {
                 phoneNumber: '0123456789',
                 role: '1',
                 avatar: '',
-                createdAt: new Date(),
-                updatedAt: new Date(),
             },
             {
                 userName: 'Phong Sẹo',
@@ -30,8 +28,6 @@ module.exports = {
                 phoneNumber: '01112223334',
                 role: '1',
                 avatar: '',
-                createdAt: new Date(),
-                updatedAt: new Date(),
             },
         ]);
     },
