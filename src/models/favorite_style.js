@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
          * The `models/index` file will call this method automatically.
          */
         static associate(models) {
-            // Không khai báo mối quan hệ tại đây
+            
         }
     }
     Favorite_style.init({
@@ -25,6 +25,8 @@ module.exports = (sequelize, DataTypes) => {
     }, {
         sequelize,
         modelName: 'Favorite_style',
+        charset: 'utf8mb4',
+        collate: 'utf8mb4_unicode_ci',
     });
     return Favorite_style;
 };

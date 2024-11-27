@@ -30,6 +30,8 @@ module.exports = (sequelize, DataTypes) => {
     }, {
         sequelize,
         modelName: 'Include_service',
+        charset: 'utf8mb4',
+        collate: 'utf8mb4_unicode_ci',
     });
     return Include_service;
 };

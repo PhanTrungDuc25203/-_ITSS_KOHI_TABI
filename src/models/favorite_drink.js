@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
          */
         static associate(models) {
             // define association here
-            // Ví dụ: một drink có thể thuộc về nhiều người dùng (1-n), bạn có thể khai báo mối quan hệ ở đây
+
         }
     }
     Favorite_drink.init({
@@ -26,6 +26,8 @@ module.exports = (sequelize, DataTypes) => {
     }, {
         sequelize,
         modelName: 'Favorite_drink',
+        charset: 'utf8mb4',
+        collate: 'utf8mb4_unicode_ci',
     });
     return Favorite_drink;
 };
