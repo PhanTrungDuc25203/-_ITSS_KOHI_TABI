@@ -7,12 +7,7 @@ module.exports = {
             uid: {
                 type: Sequelize.INTEGER,
                 allowNull: false,
-                references: {
-                    model: 'Users', // Tham chiếu đến bảng Users
-                    key: 'id', // Khóa chính của bảng Users
-                },
-                onUpdate: 'CASCADE',
-                onDelete: 'CASCADE',
+                
             },
             distance: {
                 type: Sequelize.DECIMAL(5, 2),

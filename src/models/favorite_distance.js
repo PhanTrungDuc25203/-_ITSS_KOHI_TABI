@@ -2,22 +2,18 @@
 const { Model } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
-    class FavoriteDistance extends Model {
+    class Favorite_distance extends Model {
         /**
          * Helper method for defining associations.
          * This method is not a part of Sequelize lifecycle.
          * The `models/index` file will call this method automatically.
          */
         static associate(models) {
-            // Define association here
-            FavoriteDistance.belongsTo(models.User, {
-                foreignKey: 'uid', // Tham chiếu đến khóa ngoài UID
-                targetKey: 'id', // Tham chiếu đến khóa chính của bảng Users
-            });
+            
         }
     }
 
-    FavoriteDistance.init(
+    Favorite_distance.init(
         {
             uid: {
                 type: DataTypes.INTEGER,
@@ -37,5 +33,5 @@ module.exports = (sequelize, DataTypes) => {
         }
     );
 
-    return FavoriteDistance;
+    return Favorite_distance;
 };

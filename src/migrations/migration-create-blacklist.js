@@ -6,22 +6,12 @@ module.exports = {
             uid: {
                 allowNull: false,
                 type: Sequelize.INTEGER,
-                references: {
-                    model: 'Users', // Tên bảng Users
-                    key: 'id', // Khóa chính trong bảng Users
-                },
-                onUpdate: 'CASCADE',
-                onDelete: 'CASCADE',
+                
             },
             cid: {
                 allowNull: false,
                 type: Sequelize.INTEGER,
-                references: {
-                    model: 'Coffeeshops', // Tên bảng CoffeeShops
-                    key: 'cid', // Khóa chính trong bảng CoffeeShops
-                },
-                onUpdate: 'CASCADE',
-                onDelete: 'CASCADE',
+                
             },
         });
     },
