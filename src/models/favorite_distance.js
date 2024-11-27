@@ -27,7 +27,6 @@ module.exports = (sequelize, DataTypes) => {
         {
             sequelize,
             modelName: 'Favorite_distance',
-            tableName: 'Favorite_distances', // Đặt tên bảng rõ ràng
             charset: 'utf8mb4',
             collate: 'utf8mb4_unicode_ci',
         }
