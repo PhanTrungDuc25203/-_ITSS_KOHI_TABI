@@ -45,6 +45,10 @@ module.exports = {
                 allowNull: false,
                 defaultValue: 'Modern',
             },
+            picture: {
+                type: Sequelize.STRING(500),
+                allowNull: true,
+            },
         });
     },
     async down(queryInterface, Sequelize) {

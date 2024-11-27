@@ -40,15 +40,7 @@ module.exports = {
                 type: Sequelize.STRING
             },
             avatar: {
-                type: Sequelize.STRING
-            },
-            createdAt: {
-                allowNull: false,
-                type: Sequelize.DATE
-            },
-            updatedAt: {
-                allowNull: false,
-                type: Sequelize.DATE
+                type: Sequelize.BLOB('long')
             }
         });
     },
