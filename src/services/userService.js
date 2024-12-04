@@ -66,32 +66,77 @@ let checkUserEmail = (userEmail) => {
 let saveUserPreferenceService = (userPreferenceData) => {
     return new Promise(async (resolve, reject) => {
         try {
-            if (!userPreferenceData || !userPreferenceData.email || !userPreferenceData.stylePreference) {
+            // Kiểm tra dữ liệu đầu vào
+            if (!userPreferenceData || !userPreferenceData.email) {
                 resolve({
                     errCode: 1,
                     errMessage: 'Missing required parameter!',
-                })
+                });
             } else {
-                console.log("Check data: ", userPreferenceData);
+                // Tìm người dùng dựa vào email
                 let user = await db.User.findOne({
                     where: {
                         email: userPreferenceData.email,
-                    }
-                })
-
-                console.log("check user: ", user);
+                    },
+                });
 
                 if (user) {
-                    await db.Favorite_style.create({
-                        uid: user.id,
-                        style: userPreferenceData.stylePreference,
-                    })
+                    console.log("Check: ", userPreferenceData);
+                    let { stylePreference, servicePreference, amenityPreference, drinkPreference, distancePreference } = userPreferenceData;
+
+                    // Lưu dữ liệu vào Favorite_style nếu tồn tại stylePreference
+                    if (Array.isArray(stylePreference) && stylePreference.length > 0) {
+                        await db.Favorite_style.bulkCreate(
+                            stylePreference.map((style) => ({
+                                uid: user.id,
+                                style: style,
+                            }))
+                        );
+                    }
+
+                    // Lưu dữ liệu vào Favorite_service nếu tồn tại servicePreference
+                    if (Array.isArray(servicePreference) && servicePreference.length > 0) {
+                        await db.Favorite_service.bulkCreate(
+                            servicePreference.map((service) => ({
+                                uid: user.id,
+                                sid: service,
+                            }))
+                        );
+                    }
+
+                    // Lưu dữ liệu vào Favorite_amenity nếu tồn tại amenityPreference
+                    if (Array.isArray(amenityPreference) && amenityPreference.length > 0) {
+                        await db.Favorite_amenity.bulkCreate(
+                            amenityPreference.map((amenity) => ({
+                                uid: user.id,
+                                aid: amenity,
+                            }))
+                        );
+                    }
+
+                    // Lưu dữ liệu vào Favorite_drink nếu tồn tại drinkPreference
+                    if (Array.isArray(drinkPreference) && drinkPreference.length > 0) {
+                        await db.Favorite_drink.bulkCreate(
+                            drinkPreference.map((drink) => ({
+                                uid: user.id,
+                                did: drink,
+                            }))
+                        );
+                    }
+
+                    // Lưu dữ liệu vào Favorite_distance nếu tồn tại distancePreference
+                    if (distancePreference !== undefined) {
+                        await db.Favorite_distance.create({
+                            uid: user.id,
+                            distance: distancePreference,
+                        });
+                    }
                 }
 
                 resolve({
                     errCode: 0,
-                    errMessage: 'Save preference for user successfully!',
-                })
+                    errMessage: 'Save preferences for user successfully!',
+                });
             }
         } catch (e) {
             reject(e);

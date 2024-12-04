@@ -41,6 +41,14 @@ module.exports = {
             },
             avatar: {
                 type: Sequelize.BLOB('long')
+            },
+            createdAt: {
+                allowNull: false,
+                type: Sequelize.DATE
+            },
+            updatedAt: {
+                allowNull: false,
+                type: Sequelize.DATE
             }
         });
     },

@@ -16,6 +16,14 @@ module.exports = {
             style: {
                 type: Sequelize.ENUM('Vintage', 'Modern', 'Eco-Friendly'),
                 allowNull: false
+            },
+            createdAt: {
+                allowNull: false,
+                type: Sequelize.DATE
+            },
+            updatedAt: {
+                allowNull: false,
+                type: Sequelize.DATE
             }
         });
     },
