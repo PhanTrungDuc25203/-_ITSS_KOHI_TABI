@@ -31,7 +31,21 @@ let saveUserPreference = async (req, res) => {
     }
 }
 
+let getDataForSelectBoxUserPreferencePage = async (req, res) => {
+    try {
+        let response = await userService.getDataForSelectBoxUserPreferencePageService();
+        return res.status(200).json(response);
+    } catch (e) {
+        console.log(e);
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: `Get user's preference error!`
+        })
+    }
+}
+
 module.exports = {
     handleLogin: handleLogin,
     saveUserPreference: saveUserPreference,
+    getDataForSelectBoxUserPreferencePage: getDataForSelectBoxUserPreferencePage,
 }

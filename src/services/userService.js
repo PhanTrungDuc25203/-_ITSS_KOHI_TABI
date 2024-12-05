@@ -73,7 +73,6 @@ let saveUserPreferenceService = (userPreferenceData) => {
                     errMessage: 'Missing required parameter!',
                 });
             } else {
-                // Tìm người dùng dựa vào email
                 let user = await db.User.findOne({
                     where: {
                         email: userPreferenceData.email,
@@ -82,9 +81,15 @@ let saveUserPreferenceService = (userPreferenceData) => {
 
                 if (user) {
                     console.log("Check: ", userPreferenceData);
-                    let { stylePreference, servicePreference, amenityPreference, drinkPreference, distancePreference } = userPreferenceData;
+                    let { stylePreference, servicePreference, amenityPreference, drinkPreference, distancePreference, timePreference } = userPreferenceData;
 
-                    // Lưu dữ liệu vào Favorite_style nếu tồn tại stylePreference
+                    await db.Favorite_style.destroy({ where: { uid: user.id } });
+                    await db.Favorite_service.destroy({ where: { uid: user.id } });
+                    await db.Favorite_amenity.destroy({ where: { uid: user.id } });
+                    await db.Favorite_drink.destroy({ where: { uid: user.id } });
+                    await db.Favorite_distance.destroy({ where: { uid: user.id } });
+                    await db.Favorite_time.destroy({ where: { uid: user.id } });
+
                     if (Array.isArray(stylePreference) && stylePreference.length > 0) {
                         await db.Favorite_style.bulkCreate(
                             stylePreference.map((style) => ({
@@ -94,7 +99,6 @@ let saveUserPreferenceService = (userPreferenceData) => {
                         );
                     }
 
-                    // Lưu dữ liệu vào Favorite_service nếu tồn tại servicePreference
                     if (Array.isArray(servicePreference) && servicePreference.length > 0) {
                         await db.Favorite_service.bulkCreate(
                             servicePreference.map((service) => ({
@@ -104,7 +108,6 @@ let saveUserPreferenceService = (userPreferenceData) => {
                         );
                     }
 
-                    // Lưu dữ liệu vào Favorite_amenity nếu tồn tại amenityPreference
                     if (Array.isArray(amenityPreference) && amenityPreference.length > 0) {
                         await db.Favorite_amenity.bulkCreate(
                             amenityPreference.map((amenity) => ({
@@ -114,7 +117,6 @@ let saveUserPreferenceService = (userPreferenceData) => {
                         );
                     }
 
-                    // Lưu dữ liệu vào Favorite_drink nếu tồn tại drinkPreference
                     if (Array.isArray(drinkPreference) && drinkPreference.length > 0) {
                         await db.Favorite_drink.bulkCreate(
                             drinkPreference.map((drink) => ({
@@ -124,12 +126,20 @@ let saveUserPreferenceService = (userPreferenceData) => {
                         );
                     }
 
-                    // Lưu dữ liệu vào Favorite_distance nếu tồn tại distancePreference
                     if (distancePreference !== undefined) {
                         await db.Favorite_distance.create({
                             uid: user.id,
                             distance: distancePreference,
                         });
+                    }
+
+                    if (Array.isArray(timePreference) && timePreference.length > 0) {
+                        await db.Favorite_time.bulkCreate(
+                            timePreference.map((time) => ({
+                                uid: user.id,
+                                time: time,
+                            }))
+                        );
                     }
                 }
 
@@ -144,7 +154,32 @@ let saveUserPreferenceService = (userPreferenceData) => {
     })
 }
 
+let getDataForSelectBoxUserPreferencePageService = () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let services = await db.Service.findAll();
+            let amenities = await db.Amenity.findAll();
+            let drinks = await db.Drink.findAll();
+
+            let data = {
+                services: services,
+                amenities: amenities,
+                drinks: drinks,
+            };
+
+            resolve({
+                errCode: 0,
+                errMessage: 'Successfully fetched data!',
+                data: data,
+            });
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
 module.exports = {
     handleLoginService: handleLoginService,
     saveUserPreferenceService: saveUserPreferenceService,
+    getDataForSelectBoxUserPreferencePageService: getDataForSelectBoxUserPreferencePageService,
 }
