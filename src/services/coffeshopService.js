@@ -1,6 +1,6 @@
 import db from "../models";
 
-let searchCoffeShopService = async (criteria) => {
+let searchCoffeeShopService = async (criteria) => {
     try {
         const {
             name,
@@ -16,7 +16,7 @@ let searchCoffeShopService = async (criteria) => {
         } = criteria;
 
         // Xây dựng truy vấn dựa trên các tiêu chí tìm kiếm
-        let coffeShops = await db.CoffeShop.findAll({
+        let coffeeShops = await db.CoffeShop.findAll({
             where: {
                 name: {
                     [db.Sequelize.Op.like]: `%${name}%`
@@ -50,18 +50,30 @@ let searchCoffeShopService = async (criteria) => {
                     model: db.Include_amenity,
                     where: { aid: amenity },
                     required: true // Bắt buộc phải có amenity phù hợp
-                }
+                },
+                {
+                    model: db.Drink,
+                    through: {
+                        model: db.Include_drink,
+                        attributes: []
+                    },
+                    as: 'drinks',
+                    required: false // Không bắt buộc phải có drinks
+                },
             ],
             attributes: ['cid', 'name', 'province_vie', 'province_jap', 'min_price', 'max_price', 'open_time', 'end_time', 'waiting_time', 'style']
         });
 
-        return coffeShops;
+        return coffeeShops;
+
     } catch (error) {
+
         console.error("Error in searchCoffeShopService: ", error);
         throw error;
+
     }
 };
 
 module.exports = {
-    searchCoffeShopService: searchCoffeShopService
+    searchCoffeeShopService: searchCoffeeShopService
 };

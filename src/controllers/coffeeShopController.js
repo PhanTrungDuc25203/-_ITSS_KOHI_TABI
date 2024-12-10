@@ -4,7 +4,7 @@ let getAllCoffeeShops = async (req, res) => {
     try {
         let data = await db.CoffeeShop.findAll(); // Use CoffeeShop model
         console.log('data: ', data);
-        
+
         return res.render('homePage.ejs', {
             data: JSON.stringify(data)
         });
@@ -17,7 +17,19 @@ let getAllCoffeeShops = async (req, res) => {
 let getCoffeeShopById = async (req, res) => {
     try {
         let id = req.params.id;
-        let data = await db.CoffeeShop.findOne({ where: { cid: id } });
+        let data = await db.CoffeeShop.findOne({
+            where: { cid: id },
+            include: [
+                {
+                    model: db.Drink,
+                    through: {
+                        model: db.Include_drink,
+                        attributes: []
+                    },
+                    as: 'drinks'
+                }
+            ]
+        });
         if (data) {
             return res.json(data);
         } else {
