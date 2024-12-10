@@ -85,10 +85,6 @@ module.exports = {
                 type: Sequelize.STRING(500),
                 allowNull: true,
             },
-            waiting_time: {
-                type: Sequelize.ENUM('1', '2', '3'),
-                allowNull: false,
-            },
             createdAt: {
                 allowNull: false,
                 type: Sequelize.DATE

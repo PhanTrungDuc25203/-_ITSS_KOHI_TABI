@@ -11,7 +11,12 @@ module.exports = (sequelize, DataTypes) => {
          */
         static associate(models) {
             // define association here
-
+            Favorite_drink.belongsTo(models.User, { foreignKey: 'uid', targetKey: 'id', as: 'favoriteDrink' })
+            Favorite_drink.hasMany(models.Include_drink, {
+                foreignKey: 'did',
+                sourceKey: 'did',
+                as: 'shopIncludeFavoriteDrink'
+            });
         }
     }
     Favorite_drink.init({

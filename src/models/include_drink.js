@@ -10,7 +10,11 @@ module.exports = (sequelize, DataTypes) => {
          * The `models/index` file will call this method automatically.
          */
         static associate(models) {
-
+            Include_drink.belongsTo(models.Favorite_drink, {
+                foreignKey: 'did',
+                targetKey: 'did',
+                as: 'shopIncludeFavoriteDrink'
+            });
         }
     }
     Include_drink.init({

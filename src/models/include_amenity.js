@@ -10,7 +10,11 @@ module.exports = (sequelize, DataTypes) => {
          * The `models/index` file will call this method automatically.
          */
         static associate(models) {
-            Include_amenity.belongsTo(models.Favorite_amenity, { foreignKey: 'aid', targetKey: 'aid', as: 'shopIncludeFavoriteAmenity' })
+            Include_amenity.belongsTo(models.Favorite_amenity, {
+                foreignKey: 'aid',
+                targetKey: 'aid',
+                as: 'shopIncludeFavoriteAmenity'
+            });
         }
     }
     Include_amenity.init({
