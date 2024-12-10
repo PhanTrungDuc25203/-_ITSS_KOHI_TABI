@@ -199,6 +199,17 @@ let getCoffeeShopForYouService = (email) => {
                             include: [
                                 {
                                     model: db.Include_amenity, as: 'shopIncludeFavoriteAmenity',
+                                    attributes: ['cid'],
+                                },
+                            ]
+                        },
+                        {
+                            model: db.Favorite_drink, as: 'favoriteDrink',
+                            attributes: ['did'],
+                            include: [
+                                {
+                                    model: db.Include_drink, as: 'shopIncludeFavoriteDrink',
+                                    attributes: ['cid'],
                                 },
                             ]
                         },
@@ -206,20 +217,36 @@ let getCoffeeShopForYouService = (email) => {
                 });
 
                 if (user) {
-                    // Tập hợp tất cả `cid` vào mảng `coffeeShop`, loại bỏ các giá trị trùng lặp
-                    let coffeeShopFavoriteAmenity = [];
+                    // Lấy coffeeShopByAmenity
+                    let coffeeShopByAmenity = [];
                     user.favoriteAmenity.forEach(favorite => {
                         favorite.shopIncludeFavoriteAmenity.forEach(shop => {
-                            if (!coffeeShopFavoriteAmenity.includes(shop.cid)) {
-                                coffeeShopFavoriteAmenity.push(shop.cid);
+                            if (!coffeeShopByAmenity.includes(shop.cid)) {
+                                coffeeShopByAmenity.push(shop.cid);
                             }
                         });
                     });
 
-                    console.log("By amenity: ", coffeeShopFavoriteAmenity);
+                    // Lấy coffeeShopByDrink
+                    let coffeeShopByDrink = [];
+                    user.favoriteDrink.forEach(favorite => {
+                        favorite.shopIncludeFavoriteDrink.forEach(shop => {
+                            if (!coffeeShopByDrink.includes(shop.cid)) {
+                                coffeeShopByDrink.push(shop.cid);
+                            }
+                        });
+                    });
+
+                    // Tìm giao của 2 mảng
+                    let coffeeShopIntersection = coffeeShopByAmenity.filter(cid =>
+                        coffeeShopByDrink.includes(cid)
+                    );
 
                     resolve({
-                        data: coffeeShopFavoriteAmenity, // Trả về mảng coffeeShop
+                        user: user,
+                        coffeeShopByDrink: coffeeShopByDrink,
+                        coffeeShopByAmenity: coffeeShopByAmenity,
+                        data: coffeeShopIntersection,
                         errCode: 0,
                         errMessage: 'Fetched coffee shops successfully!',
                     });
@@ -227,7 +254,7 @@ let getCoffeeShopForYouService = (email) => {
                     resolve({
                         errCode: 2,
                         errMessage: 'User not found!',
-                    });
+                    })
                 }
             }
         } catch (e) {
