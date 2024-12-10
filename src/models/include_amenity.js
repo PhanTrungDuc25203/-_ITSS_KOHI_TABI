@@ -15,6 +15,11 @@ module.exports = (sequelize, DataTypes) => {
                 targetKey: 'aid',
                 as: 'shopIncludeFavoriteAmenity'
             });
+            Include_amenity.belongsTo(models.CoffeeShop, {
+                foreignKey: 'cid',
+                targetKey: 'cid',
+                as: 'includeAmenity'
+            });
         }
     }
     Include_amenity.init({

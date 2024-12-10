@@ -15,6 +15,8 @@ module.exports = (sequelize, DataTypes) => {
                 targetKey: 'style',      // Trường trong Favorite_style kết nối
                 as: 'shopIncludeFavoriteStyle' // Alias
             });
+            CoffeeShop.hasMany(models.Include_amenity, { foreignKey: 'cid', as: 'includeAmenity' })
+            CoffeeShop.hasMany(models.Include_service, { foreignKey: 'cid', as: 'includeService' })
         }
     }
 
