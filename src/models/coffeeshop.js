@@ -10,6 +10,9 @@ module.exports = (sequelize, DataTypes) => {
          */
         static associate(models) {
             // Define associations here if needed
+            CoffeeShop.hasMany(models.Include_amenity, { foreignKey: 'cid', as: 'includeAmenity' })
+            CoffeeShop.hasMany(models.Include_service, { foreignKey: 'cid', as: 'includeService' })
+
         }
     }
 
@@ -100,7 +103,7 @@ module.exports = (sequelize, DataTypes) => {
         },
     }, {
         sequelize,
-        modelName: 'Coffeeshop',
+        modelName: 'CoffeeShop',
         charset: 'utf8mb4',
         collate: 'utf8mb4_unicode_ci',
     });
