@@ -6,7 +6,7 @@ const salt = bcrypt.genSaltSync(10);
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
     async up(queryInterface, Sequelize) {
-        const saltRounds = 10; // Số vòng salt
+        const currentTimestamp = new Date(); // Lấy thời gian hiện tại
 
         return queryInterface.bulkInsert('Users', [
             {
@@ -18,6 +18,8 @@ module.exports = {
                 phoneNumber: '0123456789',
                 role: '1',
                 avatar: '',
+                createdAt: currentTimestamp, // Thêm trường createdAt
+                updatedAt: currentTimestamp, // Thêm trường updatedAt
             },
             {
                 userName: 'Phong Sẹo',
@@ -28,6 +30,8 @@ module.exports = {
                 phoneNumber: '01112223334',
                 role: '1',
                 avatar: '',
+                createdAt: currentTimestamp, // Thêm trường createdAt
+                updatedAt: currentTimestamp, // Thêm trường updatedAt
             },
         ]);
     },

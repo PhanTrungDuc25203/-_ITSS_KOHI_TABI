@@ -5,6 +5,13 @@ module.exports = (sequelize, DataTypes) => {
     class CoffeeShop extends Model {
         static associate(models) {
             // Define associations here if needed
+            CoffeeShop.belongsTo(models.Favorite_style, {
+                foreignKey: 'style',     // Trường trong CoffeeShop trỏ đến Favorite_style
+                targetKey: 'style',      // Trường trong Favorite_style kết nối
+                as: 'shopIncludeFavoriteStyle' // Alias
+            });
+            CoffeeShop.hasMany(models.Include_amenity, { foreignKey: 'cid', as: 'includeAmenity' })
+            CoffeeShop.hasMany(models.Include_service, { foreignKey: 'cid', as: 'includeService' })
         }
     }
 
@@ -20,30 +27,30 @@ module.exports = (sequelize, DataTypes) => {
         },
         province_vie: {
             type: DataTypes.ENUM(
-                'An Giang', 'Bà Rịa - Vũng Tàu', 'Bắc Giang', 'Bắc Kạn', 'Bạc Liêu', 'Bắc Ninh', 
-                'Bến Tre', 'Bình Định', 'Bình Dương', 'Bình Phước', 'Bình Thuận', 'Cà Mau', 
-                'Cần Thơ', 'Cao Bằng', 'Đà Nẵng', 'Đắk Lắk', 'Đắk Nông', 'Điện Biên', 'Đồng Nai', 
-                'Đồng Tháp', 'Gia Lai', 'Hà Giang', 'Hà Nam', 'Hà Nội', 'Hà Tĩnh', 'Hải Dương', 
-                'Hải Phòng', 'Hậu Giang', 'Hòa Bình', 'Hưng Yên', 'Khánh Hòa', 'Kiên Giang', 
-                'Kon Tum', 'Lai Châu', 'Lâm Đồng', 'Lạng Sơn', 'Lào Cai', 'Long An', 'Nam Định', 
-                'Nghệ An', 'Ninh Bình', 'Ninh Thuận', 'Phú Thọ', 'Phú Yên', 'Quảng Bình', 
-                'Quảng Nam', 'Quảng Ngãi', 'Quảng Ninh', 'Quảng Trị', 'Sóc Trăng', 'Sơn La', 
-                'Tây Ninh', 'Thái Bình', 'Thái Nguyên', 'Thanh Hóa', 'Thừa Thiên Huế', 'Tiền Giang', 
+                'An Giang', 'Bà Rịa - Vũng Tàu', 'Bắc Giang', 'Bắc Kạn', 'Bạc Liêu', 'Bắc Ninh',
+                'Bến Tre', 'Bình Định', 'Bình Dương', 'Bình Phước', 'Bình Thuận', 'Cà Mau',
+                'Cần Thơ', 'Cao Bằng', 'Đà Nẵng', 'Đắk Lắk', 'Đắk Nông', 'Điện Biên', 'Đồng Nai',
+                'Đồng Tháp', 'Gia Lai', 'Hà Giang', 'Hà Nam', 'Hà Nội', 'Hà Tĩnh', 'Hải Dương',
+                'Hải Phòng', 'Hậu Giang', 'Hòa Bình', 'Hưng Yên', 'Khánh Hòa', 'Kiên Giang',
+                'Kon Tum', 'Lai Châu', 'Lâm Đồng', 'Lạng Sơn', 'Lào Cai', 'Long An', 'Nam Định',
+                'Nghệ An', 'Ninh Bình', 'Ninh Thuận', 'Phú Thọ', 'Phú Yên', 'Quảng Bình',
+                'Quảng Nam', 'Quảng Ngãi', 'Quảng Ninh', 'Quảng Trị', 'Sóc Trăng', 'Sơn La',
+                'Tây Ninh', 'Thái Bình', 'Thái Nguyên', 'Thanh Hóa', 'Thừa Thiên Huế', 'Tiền Giang',
                 'TP Hồ Chí Minh', 'Trà Vinh', 'Tuyên Quang', 'Vĩnh Long', 'Vĩnh Phúc', 'Yên Bái'
             ),
             allowNull: false,
         },
         province_jap: {
             type: DataTypes.ENUM(
-                'アンザン', 'バリア=ブンタウ', 'バックザン', 'バックカン', 'バックリエウ', 'バクニン', 
-                'ベンチェ', 'ビンディン', 'ビンズオン', 'ビンフオック', 'ビントゥアン', 'カマウ', 
-                'カントー', 'カオバン', 'ダナン', 'ダクラク', 'ダクノン', 'ディエンビエン', 'ドンナイ', 
-                'ドンタップ', 'ザライ', 'ハザン', 'ハナム', 'ハノイ', 'ハティン', 'ハイズオン', 
-                'ハイフォン', 'ハウザン', 'ホアビン', 'フンイエン', 'カンホア', 'キエンザン', 
-                'コンツム', 'ライチャウ', 'ラムドン', 'ランソン', 'ラオカイ', 'ロンアン', 'ナムディン', 
-                'ゲアン', 'ニンビン', 'ニントゥアン', 'フート', 'フーイエン', 'クアンビン', 
-                'クアンナム', 'クアンガイ', 'クアンニン', 'クアンチ', 'ソクチャン', 'ソンラ', 
-                'タイニン', 'タイビン', 'タイグエン', 'タインホア', 'トゥアティエンフエ', 'ティエンザン', 
+                'アンザン', 'バリア=ブンタウ', 'バックザン', 'バックカン', 'バックリエウ', 'バクニン',
+                'ベンチェ', 'ビンディン', 'ビンズオン', 'ビンフオック', 'ビントゥアン', 'カマウ',
+                'カントー', 'カオバン', 'ダナン', 'ダクラク', 'ダクノン', 'ディエンビエン', 'ドンナイ',
+                'ドンタップ', 'ザライ', 'ハザン', 'ハナム', 'ハノイ', 'ハティン', 'ハイズオン',
+                'ハイフォン', 'ハウザン', 'ホアビン', 'フンイエン', 'カンホア', 'キエンザン',
+                'コンツム', 'ライチャウ', 'ラムドン', 'ランソン', 'ラオカイ', 'ロンアン', 'ナムディン',
+                'ゲアン', 'ニンビン', 'ニントゥアン', 'フート', 'フーイエン', 'クアンビン',
+                'クアンナム', 'クアンガイ', 'クアンニン', 'クアンチ', 'ソクチャン', 'ソンラ',
+                'タイニン', 'タイビン', 'タイグエン', 'タインホア', 'トゥアティエンフエ', 'ティエンザン',
                 'ホーチミン市', 'チャビン', 'トゥエンクアン', 'ビンロン', 'ビンフック', 'イエンバイ'
             ),
             allowNull: false,
@@ -91,6 +98,11 @@ module.exports = (sequelize, DataTypes) => {
         picture: {
             type: DataTypes.STRING(500),
             allowNull: true,
+        },
+        waiting_time: {
+            type: DataTypes.ENUM('1', '2', '3'),
+            allowNull: false,
+            defaultValue: '1',
         },
     }, {
         sequelize,
