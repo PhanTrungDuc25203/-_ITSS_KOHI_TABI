@@ -3,11 +3,6 @@ const { Model } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
     class CoffeeShop extends Model {
-        /**
-         * Helper method for defining associations.
-         * This method is not a part of Sequelize lifecycle.
-         * The `models/index` file will call this method automatically.
-         */
         static associate(models) {
             // Define associations here if needed
             CoffeeShop.belongsTo(models.Favorite_style, {
@@ -30,7 +25,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING(100),
             allowNull: false,
         },
-
         province_vie: {
             type: DataTypes.ENUM(
                 'An Giang', 'Bà Rịa - Vũng Tàu', 'Bắc Giang', 'Bắc Kạn', 'Bạc Liêu', 'Bắc Ninh',
@@ -71,10 +65,12 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.TIME,
             allowNull: false,
         },
+
         close_hour: {
             type: DataTypes.TIME,
             allowNull: false,
         },
+
         min_price: {
             type: DataTypes.DECIMAL(10, 2),
             allowNull: false,
@@ -83,14 +79,17 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DECIMAL(10, 2),
             allowNull: false,
         },
+
         description_eng: {
             type: DataTypes.TEXT,
             allowNull: true,
         },
+
         description_jap: {
             type: DataTypes.TEXT,
             allowNull: true,
         },
+
         style: {
             type: DataTypes.ENUM('Vintage', 'Modern', 'Eco-Friendly'),
             allowNull: false,
@@ -100,14 +99,9 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING(500),
             allowNull: true,
         },
-        waiting_time: {
-            type: DataTypes.ENUM('1', '2', '3'),
-            allowNull: false,
-            defaultValue: '1',
-        },
     }, {
         sequelize,
-        modelName: 'CoffeeShop',
+        modelName: 'CoffeeShop', // Ensure the model name is correct
         charset: 'utf8mb4',
         collate: 'utf8mb4_unicode_ci',
     });
