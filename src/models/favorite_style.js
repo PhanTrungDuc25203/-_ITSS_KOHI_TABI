@@ -10,7 +10,12 @@ module.exports = (sequelize, DataTypes) => {
          * The `models/index` file will call this method automatically.
          */
         static associate(models) {
-
+            Favorite_style.belongsTo(models.User, { foreignKey: 'uid', targetKey: 'id', as: 'favoriteStyle' })
+            Favorite_style.hasMany(models.CoffeeShop, {
+                foreignKey: 'style',     // Trường trong CoffeeShop trỏ đến Favorite_style
+                sourceKey: 'style',      // Trường trong Favorite_style được dùng để match
+                as: 'shopIncludeFavoriteStyle' // Alias phải giống nhau ở cả hai phía
+            });
         }
     }
     Favorite_style.init({
