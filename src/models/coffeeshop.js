@@ -99,11 +99,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING(500),
             allowNull: true,
         },
-        waiting_time: {
-            type: DataTypes.ENUM('1', '2', '3'),
-            allowNull: false,
-            defaultValue: '1',
-        },
     }, {
         sequelize,
         modelName: 'CoffeeShop', // Ensure the model name is correct
