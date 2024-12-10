@@ -213,6 +213,16 @@ let getCoffeeShopForYouService = (email) => {
                                 },
                             ]
                         },
+                        {
+                            model: db.Favorite_style, as: 'favoriteStyle',
+                            attributes: ['style'],
+                            include: [
+                                {
+                                    model: db.CoffeeShop, as: 'shopIncludeFavoriteStyle',
+                                    attributes: ['cid'],
+                                },
+                            ]
+                        },
                     ]
                 });
 
@@ -237,15 +247,26 @@ let getCoffeeShopForYouService = (email) => {
                         });
                     });
 
-                    // Tìm giao của 2 mảng
+                    let coffeeShopByStyle = [];
+                    user.favoriteStyle.forEach(favorite => {
+                        console.log("check id: ", favorite.style);
+                        favorite.shopIncludeFavoriteStyle.forEach(shop => {
+                            console.log("check id: ", shop.id);
+                            if (!coffeeShopByStyle.includes(shop.cid)) {
+                                coffeeShopByStyle.push(shop.cid);
+                            }
+                        });
+                    });
+
                     let coffeeShopIntersection = coffeeShopByAmenity.filter(cid =>
-                        coffeeShopByDrink.includes(cid)
-                    );
+                        coffeeShopByDrink.includes(cid) && coffeeShopByStyle.includes(cid)
+                    )
 
                     resolve({
                         user: user,
                         coffeeShopByDrink: coffeeShopByDrink,
                         coffeeShopByAmenity: coffeeShopByAmenity,
+                        coffeeShopByStyle: coffeeShopByStyle,
                         data: coffeeShopIntersection,
                         errCode: 0,
                         errMessage: 'Fetched coffee shops successfully!',
