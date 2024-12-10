@@ -14,6 +14,22 @@ let getAllCoffeeShops = async (req, res) => {
     }
 };
 
+let getCoffeeShopById = async (req, res) => {
+    try {
+        let id = req.params.id;
+        let data = await db.CoffeeShop.findOne({ where: { cid: id } });
+        if (data) {
+            return res.json(data);
+        } else {
+            return res.status(404).json({ error: 'Coffee shop not found' });
+        }
+    } catch (error) {
+        console.error('Error fetching coffee shop:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
 module.exports = {
     getAllCoffeeShops: getAllCoffeeShops,
+    getCoffeeShopById: getCoffeeShopById
 };
