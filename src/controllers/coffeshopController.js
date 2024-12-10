@@ -1,8 +1,8 @@
 import coffeshopService from "../services/coffeshopService";
 
 let searchCoffeShop = async (req, res) => {
+    console.log("Dit cu may");
     try {
-        // Gán giá trị từ body request
         let name = req.body.name;
         let province = req.body.province;
         let min_price = req.body.min_price;
@@ -14,7 +14,6 @@ let searchCoffeShop = async (req, res) => {
         let service = req.body.service;
         let amenity = req.body.amenity;
 
-        // Kiểm tra xem tất cả các tham số có bị thiếu hoặc rỗng hay không
         if (!name || !province || !min_price || !max_price || !open_time || !end_time || !waiting_time || !style || !service || !amenity) {
             return res.status(400).json({
                 errCode: 1,
@@ -57,7 +56,7 @@ let searchCoffeShop = async (req, res) => {
             errMessage: 'Server error while searching coffee shops!'
         });
     }
-};
+}
 
 module.exports = {
     searchCoffeShop: searchCoffeShop,
