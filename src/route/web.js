@@ -15,6 +15,7 @@ let initWebRoutes = (app) => {
     //user-preference api
     router.post('/api/save-user-preference', userController.saveUserPreference);
     router.get('/api/get-data-for-select-box-user-preference-page', userController.getDataForSelectBoxUserPreferencePage);
+    router.get('/api/get-coffee-shop-for-you', userController.getCoffeeShopForYou);
     return app.use("/", router);
 }
 module.exports = initWebRoutes;

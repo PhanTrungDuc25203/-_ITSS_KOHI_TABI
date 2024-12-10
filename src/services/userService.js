@@ -178,8 +178,68 @@ let getDataForSelectBoxUserPreferencePageService = () => {
     })
 }
 
+let getCoffeeShopForYouService = (email) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            // Kiểm tra dữ liệu đầu vào
+            if (!email) {
+                resolve({
+                    errCode: 1,
+                    errMessage: 'Missing required parameter!',
+                });
+            } else {
+                let user = await db.User.findOne({
+                    where: {
+                        email: email,
+                    },
+                    include: [
+                        {
+                            model: db.Favorite_amenity, as: 'favoriteAmenity',
+                            attributes: ['aid'],
+                            include: [
+                                {
+                                    model: db.Include_amenity, as: 'shopIncludeFavoriteAmenity',
+                                },
+                            ]
+                        },
+                    ]
+                });
+
+                if (user) {
+                    // Tập hợp tất cả `cid` vào mảng `coffeeShop`, loại bỏ các giá trị trùng lặp
+                    let coffeeShopFavoriteAmenity = [];
+                    user.favoriteAmenity.forEach(favorite => {
+                        favorite.shopIncludeFavoriteAmenity.forEach(shop => {
+                            if (!coffeeShopFavoriteAmenity.includes(shop.cid)) {
+                                coffeeShopFavoriteAmenity.push(shop.cid);
+                            }
+                        });
+                    });
+
+                    console.log("By amenity: ", coffeeShopFavoriteAmenity);
+
+                    resolve({
+                        data: coffeeShopFavoriteAmenity, // Trả về mảng coffeeShop
+                        errCode: 0,
+                        errMessage: 'Fetched coffee shops successfully!',
+                    });
+                } else {
+                    resolve({
+                        errCode: 2,
+                        errMessage: 'User not found!',
+                    });
+                }
+            }
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
+
 module.exports = {
     handleLoginService: handleLoginService,
     saveUserPreferenceService: saveUserPreferenceService,
     getDataForSelectBoxUserPreferencePageService: getDataForSelectBoxUserPreferencePageService,
+    getCoffeeShopForYouService: getCoffeeShopForYouService,
 }
