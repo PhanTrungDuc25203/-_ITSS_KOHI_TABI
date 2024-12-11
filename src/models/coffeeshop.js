@@ -19,6 +19,13 @@ module.exports = (sequelize, DataTypes) => {
                 otherKey: 'did',
                 as: 'drinks'
             });
+
+            CoffeeShop.belongsToMany(models.User, {
+                through: models.Favorite_list,
+                foreignKey: 'cid',
+                otherKey: 'ud',
+                as: 'favoritedByUsers'
+            });
         }
     }
 
