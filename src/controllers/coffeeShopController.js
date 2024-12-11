@@ -31,7 +31,7 @@ let getCoffeeShopById = async (req, res) => {
             ]
         });
         if (data) {
-            return res.json(data);
+            return res.json({ data, errCode: 0 });
         } else {
             return res.status(404).json({ error: 'Coffee shop not found' });
         }

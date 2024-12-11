@@ -1,5 +1,6 @@
 import db from "../models/index";
 import bcrypt from "bcryptjs";
+import { Sequelize } from 'sequelize';
 
 const salt = bcrypt.genSaltSync(10);
 
@@ -233,6 +234,10 @@ let getCoffeeShopForYouService = (email) => {
                                 },
                             ]
                         },
+                        {
+                            model: db.Favorite_time, as: 'favoriteTime',
+                            attributes: ['time'],
+                        },
                     ]
                 });
 
@@ -277,9 +282,33 @@ let getCoffeeShopForYouService = (email) => {
                         });
                     });
 
+                    let favoriteTime = [];
+                    user.favoriteTime.forEach(time => {
+                        if (!favoriteTime.includes(time.time)) {
+                            favoriteTime.push(time.time);
+                        }
+                    });
+
+                    let coffeeShopsByTimeQueried = await db.CoffeeShop.findAll({
+                        where: {
+                            [Sequelize.Op.or]: favoriteTime.map((time) => ({
+                                open_hour: { [db.Sequelize.Op.lte]: time },
+                                close_hour: { [db.Sequelize.Op.gte]: time },
+                            })),
+                        },
+                        attributes: ['cid'],
+                    })
+
+                    let coffeeShopsByTime = [];
+                    coffeeShopsByTimeQueried.forEach(shop => {
+                        if (!coffeeShopsByTime.includes(shop.cid)) {
+                            coffeeShopsByTime.push(shop.cid);
+                        }
+                    });
+
                     let coffeeShopIntersection = coffeeShopByAmenity.filter(cid =>
                         coffeeShopByDrink.includes(cid) && coffeeShopByStyle.includes(cid) &&
-                        coffeeShopByService.includes(cid)
+                        coffeeShopByService.includes(cid) && coffeeShopsByTime.includes(cid)
                     )
 
                     const coffeeShops = await db.CoffeeShop.findAll({
@@ -288,8 +317,6 @@ let getCoffeeShopForYouService = (email) => {
                         }
                     })
 
-                    console.log(coffeeShops);
-
                     resolve({
                         // user: user,
                         // coffeeShopByDrink: coffeeShopByDrink,
@@ -297,6 +324,7 @@ let getCoffeeShopForYouService = (email) => {
                         // coffeeShopByStyle: coffeeShopByStyle,
                         // coffeeShopByService: coffeeShopByService,
                         // data: coffeeShopIntersection,
+                        // coffeeShopsByTime: coffeeShopsByTime,
                         coffeeShops: coffeeShops,
                         errCode: 0,
                         errMessage: 'Fetched coffee shops successfully!',
@@ -383,7 +411,7 @@ let searchCoffeShopService = async (criteria) => {
 }
 
 
-const createUser = async (username,password,email,phone) => {
+const createUser = async (username, password, email, phone) => {
     try {
 
         // Kiểm tra xem email đã tồn tại hay chưa
@@ -409,11 +437,11 @@ const createUser = async (username,password,email,phone) => {
 
         // Tạo user mới trong cơ sở dữ liệu
         await db.User.create({
-                userName: username,
-                password: hashedPassword,
-                email: email,
-                phoneNumber: phone,
-                role: 1,
+            userName: username,
+            password: hashedPassword,
+            email: email,
+            phoneNumber: phone,
+            role: 1,
         });
 
         return {
