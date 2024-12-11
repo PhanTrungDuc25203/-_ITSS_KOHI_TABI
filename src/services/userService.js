@@ -353,6 +353,53 @@ let searchCoffeShopService = async (criteria) => {
 }
 
 
+const createUser = async (username,password,email,phone) => {
+    try {
+
+        // Kiểm tra xem email đã tồn tại hay chưa
+        const existingEmail = await db.User.findOne({ where: { email } });
+        if (existingEmail) {
+            return {
+                errCode: 3,
+                message: 'Email is already in use.',
+            };
+        }
+
+        // Kiểm tra xem username đã tồn tại hay chưa
+        const existingUsername = await db.User.findOne({ where: { userName: username } });
+        if (existingUsername) {
+            return {
+                errCode: 4,
+                message: 'Username is already taken.',
+            };
+        }
+
+        // Hash mật khẩu
+        const hashedPassword = bcrypt.hashSync(password, salt);
+
+        // Tạo user mới trong cơ sở dữ liệu
+        await db.User.create({
+                userName: username,
+                password: hashedPassword,
+                email: email,
+                phoneNumber: phone,
+                role: 1,
+        });
+
+        return {
+            errCode: 0,
+            message: 'Sign up successful!',
+        };
+    } catch (error) {
+        console.error('Error in createUser:', error);
+        return {
+            errCode: -1,
+            message: 'An error occurred while creating the user.',
+        };
+    }
+};
+
+
 
 module.exports = {
     handleLoginService: handleLoginService,
@@ -360,4 +407,5 @@ module.exports = {
     getDataForSelectBoxUserPreferencePageService: getDataForSelectBoxUserPreferencePageService,
     getCoffeeShopForYouService: getCoffeeShopForYouService,
     searchCoffeShopService: searchCoffeShopService,
+    createUser: createUser,
 }
