@@ -61,16 +61,17 @@ let getCoffeeShopForYou = async (req, res) => {
 let searchCoffeShop = async (req, res) => {
     console.log("Dit cu may");
     try {
-        let name = req.body.name;
-        let province = req.body.province;
-        let min_price = req.body.min_price;
-        let max_price = req.body.max_price;
-        let open_time = req.body.open_time;
-        let end_time = req.body.end_time;
-        let waiting_time = req.body.waiting_time;
-        let style = req.body.style;
-        let service = req.body.service;
-        let amenity = req.body.amenity;
+        let name = req.query.name;
+        let province = req.query.province;
+        let min_price = req.query.min_price;
+        let max_price = req.query.max_price;
+        let open_time = req.query.open_time;
+        let end_time = req.query.end_time;
+        let waiting_time = req.query.waiting_time;
+        let style = req.query.style;
+        let service = req.query.service;
+        let amenity = req.query.amenity;
+
 
         if (!name || !province || !min_price || !max_price || !open_time || !end_time || !waiting_time || !style || !service || !amenity) {
             return res.status(400).json({
