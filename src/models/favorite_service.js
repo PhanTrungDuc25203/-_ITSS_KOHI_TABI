@@ -10,7 +10,12 @@ module.exports = (sequelize, DataTypes) => {
          * The `models/index` file will call this method automatically.
          */
         static associate(models) {
-
+            Favorite_service.belongsTo(models.User, { foreignKey: 'uid', targetKey: 'id', as: 'favoriteService' })
+            Favorite_service.hasMany(models.Include_service, {
+                foreignKey: 'sid',
+                sourceKey: 'sid',
+                as: 'shopIncludeFavoriteService'
+            });
         }
     }
     Favorite_service.init({

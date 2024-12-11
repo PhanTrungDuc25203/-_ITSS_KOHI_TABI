@@ -15,6 +15,11 @@ module.exports = (sequelize, DataTypes) => {
                 sourceKey: 'cid',
                 as: 'includeService'
             });
+            Include_service.belongsTo(models.Favorite_service, {
+                foreignKey: 'sid',
+                targetKey: 'sid',
+                as: 'shopIncludeFavoriteService'
+            });
         }
     }
     Include_service.init({

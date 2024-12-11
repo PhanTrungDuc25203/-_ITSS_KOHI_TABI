@@ -41,7 +41,39 @@ let getCoffeeShopById = async (req, res) => {
     }
 };
 
+let addFavoriteCoffeeShop = async (req, res) => {
+    try {
+        let userId = req.body.user_id;
+        let coffeeShopId = req.body.coffee_shop_id;
+
+        // Kiểm tra xem bản ghi đã tồn tại chưa
+        let existingFavorite = await db.Favorite_list.findOne({
+            where: {
+                uid: userId,
+                cid: coffeeShopId
+            }
+        });
+
+        if (existingFavorite) {
+            return res.status(400).json({ error: 'Favorite already exists' });
+        }
+
+        // Nếu chưa tồn tại, tạo mới bản ghi
+        let favorite = await db.Favorite_list.create({
+            uid: userId,
+            cid: coffeeShopId
+        });
+
+        return res.status(201).json(favorite);
+
+    } catch (error) {
+        console.error('Error adding favorite coffee shop:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
 module.exports = {
     getAllCoffeeShops: getAllCoffeeShops,
-    getCoffeeShopById: getCoffeeShopById
+    getCoffeeShopById: getCoffeeShopById,
+    addFavoriteCoffeeShop: addFavoriteCoffeeShop,
 };
