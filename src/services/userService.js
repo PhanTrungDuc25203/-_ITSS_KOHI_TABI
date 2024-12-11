@@ -223,6 +223,16 @@ let getCoffeeShopForYouService = (email) => {
                                 },
                             ]
                         },
+                        {
+                            model: db.Favorite_service, as: 'favoriteService',
+                            attributes: ['sid'],
+                            include: [
+                                {
+                                    model: db.Include_service, as: 'shopIncludeFavoriteService',
+                                    attributes: ['cid'],
+                                },
+                            ]
+                        },
                     ]
                 });
 
@@ -247,19 +257,29 @@ let getCoffeeShopForYouService = (email) => {
                         });
                     });
 
+                    //lấy dữ liệu các coffeeShopByStyle
                     let coffeeShopByStyle = [];
                     user.favoriteStyle.forEach(favorite => {
-                        console.log("check id: ", favorite.style);
                         favorite.shopIncludeFavoriteStyle.forEach(shop => {
-                            console.log("check id: ", shop.id);
                             if (!coffeeShopByStyle.includes(shop.cid)) {
                                 coffeeShopByStyle.push(shop.cid);
                             }
                         });
                     });
 
+                    //lấy dữ liệu các coffeeShopByService
+                    let coffeeShopByService = [];
+                    user.favoriteService.forEach(favorite => {
+                        favorite.shopIncludeFavoriteService.forEach(shop => {
+                            if (!coffeeShopByService.includes(shop.cid)) {
+                                coffeeShopByService.push(shop.cid);
+                            }
+                        });
+                    });
+
                     let coffeeShopIntersection = coffeeShopByAmenity.filter(cid =>
-                        coffeeShopByDrink.includes(cid) && coffeeShopByStyle.includes(cid)
+                        coffeeShopByDrink.includes(cid) && coffeeShopByStyle.includes(cid) &&
+                        coffeeShopByService.includes(cid)
                     )
 
                     resolve({
@@ -267,6 +287,7 @@ let getCoffeeShopForYouService = (email) => {
                         coffeeShopByDrink: coffeeShopByDrink,
                         coffeeShopByAmenity: coffeeShopByAmenity,
                         coffeeShopByStyle: coffeeShopByStyle,
+                        coffeeShopByService: coffeeShopByService,
                         data: coffeeShopIntersection,
                         errCode: 0,
                         errMessage: 'Fetched coffee shops successfully!',
