@@ -282,13 +282,22 @@ let getCoffeeShopForYouService = (email) => {
                         coffeeShopByService.includes(cid)
                     )
 
+                    const coffeeShops = await db.CoffeeShop.findAll({
+                        where: {
+                            cid: coffeeShopIntersection,
+                        }
+                    })
+
+                    console.log(coffeeShops);
+
                     resolve({
-                        user: user,
-                        coffeeShopByDrink: coffeeShopByDrink,
-                        coffeeShopByAmenity: coffeeShopByAmenity,
-                        coffeeShopByStyle: coffeeShopByStyle,
-                        coffeeShopByService: coffeeShopByService,
-                        data: coffeeShopIntersection,
+                        // user: user,
+                        // coffeeShopByDrink: coffeeShopByDrink,
+                        // coffeeShopByAmenity: coffeeShopByAmenity,
+                        // coffeeShopByStyle: coffeeShopByStyle,
+                        // coffeeShopByService: coffeeShopByService,
+                        // data: coffeeShopIntersection,
+                        coffeeShops: coffeeShops,
                         errCode: 0,
                         errMessage: 'Fetched coffee shops successfully!',
                     });
