@@ -19,6 +19,7 @@ let initWebRoutes = (app) => {
 
     //user-preference api
     router.post('/api/save-user-preference', userController.saveUserPreference);
+    router.post('/api/add-favorite-coffee-shop', coffeeShopController.addFavoriteCoffeeShop); // Thêm route ở đây
     router.get('/api/get-data-for-select-box-user-preference-page', userController.getDataForSelectBoxUserPreferencePage);
     router.get('/api/get-coffee-shop-for-you', userController.getCoffeeShopForYou);
     router.get('/api/search-coffeshop',userController.searchCoffeShop);
