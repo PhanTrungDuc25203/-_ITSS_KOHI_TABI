@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
             CoffeeShop.belongsToMany(models.User, {
                 through: models.Favorite_list,
                 foreignKey: 'cid',
-                otherKey: 'ud',
+                otherKey: 'uid',
                 as: 'favoritedByUsers'
             });
         }

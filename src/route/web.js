@@ -16,6 +16,8 @@ let initWebRoutes = (app) => {
     //get-all-coffee-shop api
     router.get('/api/get-all-coffee-shop', coffeeShopController.getAllCoffeeShops);
     router.get('/api/get-coffee-shop/:id', coffeeShopController.getCoffeeShopById);
+    router.get('/api/get-users-favoriting-coffee-shop/:id', coffeeShopController.getUsersFavoritingCoffeeShop);
+    router.get('/api/is-favorite-coffee-shop', coffeeShopController.isFavoriteCoffeeShop);
 
     //user-preference api
     router.post('/api/save-user-preference', userController.saveUserPreference);
