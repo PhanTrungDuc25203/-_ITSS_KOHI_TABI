@@ -97,8 +97,8 @@ let getUsersFavoritingCoffeeShop = async (req, res) => {
 
 let isFavoriteCoffeeShop = async (req, res) => {
     try {
-        let userId = req.body.user_id;
-        let coffeeShopId = req.body.coffee_shop_id;
+        let userId = req.query.user_id;
+        let coffeeShopId = req.query.coffee_shop_id;
         let data = await db.Favorite_list.findOne({
             where: {
                 uid: userId,
