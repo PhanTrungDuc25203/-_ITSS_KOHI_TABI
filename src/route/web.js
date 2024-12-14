@@ -22,9 +22,9 @@ let initWebRoutes = (app) => {
     router.post('/api/add-favorite-coffee-shop', coffeeShopController.addFavoriteCoffeeShop); // Thêm route ở đây
     router.get('/api/get-data-for-select-box-user-preference-page', userController.getDataForSelectBoxUserPreferencePage);
     router.get('/api/get-coffee-shop-for-you', userController.getCoffeeShopForYou);
-    router.get('/api/search-coffeshop',userController.searchCoffeShop);
-
-    router.get('/api/signup',userController.handleSignUp);
+    router.get('/api/search-coffeshop', userController.searchCoffeShop);
+    router.get('/api/get-coffee-shop-recent', userController.getCoffeeShopRecent);
+    router.get('/api/signup', userController.handleSignUp);
 
     return app.use("/", router);
 }

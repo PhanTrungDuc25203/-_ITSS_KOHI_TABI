@@ -57,6 +57,18 @@ let getCoffeeShopForYou = async (req, res) => {
     }
 }
 
+let getCoffeeShopRecent = async (req, res) => {
+    try {
+        let response = await userService.getCoffeeShopRecentService();
+        return res.status(200).json(response);
+    } catch (e) {
+        console.log(e);
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: `Get recent favorite coffee shop error!`
+        })
+    }
+}
 
 let searchCoffeShop = async (req, res) => {
     console.log("Dit cu may");
@@ -81,21 +93,21 @@ let searchCoffeShop = async (req, res) => {
         }
 
         let searchCriteria = {
-            name, 
-            province, 
-            min_price, 
-            max_price, 
-            open_time, 
-            end_time, 
-            waiting_time, 
-            style, 
-            service, 
+            name,
+            province,
+            min_price,
+            max_price,
+            open_time,
+            end_time,
+            waiting_time,
+            style,
+            service,
             amenity
         };
 
         // Xử lý tìm kiếm quán cà phê thông qua service
         let coffeShops = await userService.searchCoffeShopService(searchCriteria);
-        
+
         if (coffeShops.length === 0) {
             return res.status(404).json({
                 errCode: 2,
@@ -142,7 +154,7 @@ const handleSignUp = async (req, res) => {
         }
 
         // Gọi service để xử lý tạo user
-        const result = await userService.createUser(username,password,email,phone);
+        const result = await userService.createUser(username, password, email, phone);
 
         // Xử lý kết quả trả về từ service
         if (result.errCode !== 0) {
@@ -168,4 +180,5 @@ module.exports = {
     getCoffeeShopForYou: getCoffeeShopForYou,
     searchCoffeShop: searchCoffeShop,
     handleSignUp: handleSignUp,
+    getCoffeeShopRecent: getCoffeeShopRecent,
 }
