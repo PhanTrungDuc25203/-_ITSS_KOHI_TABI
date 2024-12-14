@@ -306,10 +306,28 @@ let getCoffeeShopForYouService = (email) => {
                         }
                     });
 
-                    let coffeeShopIntersection = coffeeShopByAmenity.filter(cid =>
-                        coffeeShopByDrink.includes(cid) && coffeeShopByStyle.includes(cid) &&
-                        coffeeShopByService.includes(cid) && coffeeShopsByTime.includes(cid)
-                    )
+                    let coffeeShopIntersection = coffeeShopByDrink;  // Bắt đầu với coffeeShopByDrink
+
+                    // Kiểm tra nếu coffeeShopIntersection không rỗng
+                    if (coffeeShopIntersection.length === 0) {
+                        coffeeShopIntersection = coffeeShopByAmenity;  // Nếu rỗng, tiếp tục với coffeeShopByAmenity
+                    }
+
+                    if (coffeeShopIntersection.length === 0) {
+                        coffeeShopIntersection = coffeeShopByDrink.filter(cid => coffeeShopByAmenity.includes(cid)); // Giao coffeeShopByDrink và coffeeShopByAmenity
+                    }
+
+                    if (coffeeShopIntersection.length === 0) {
+                        coffeeShopIntersection = coffeeShopIntersection.filter(cid => coffeeShopByService.includes(cid)); // Giao với coffeeShopByService
+                    }
+
+                    if (coffeeShopIntersection.length === 0) {
+                        coffeeShopIntersection = coffeeShopIntersection.filter(cid => coffeeShopByStyle.includes(cid)); // Giao với coffeeShopByStyle
+                    }
+
+                    if (coffeeShopIntersection.length === 0) {
+                        coffeeShopIntersection = coffeeShopIntersection.filter(cid => coffeeShopsByTime.includes(cid)); // Giao với coffeeShopsByTime
+                    }
 
                     const coffeeShops = await db.CoffeeShop.findAll({
                         where: {
