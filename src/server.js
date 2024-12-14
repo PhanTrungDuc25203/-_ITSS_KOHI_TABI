@@ -19,7 +19,7 @@ app.use(compression());
 // app.use(cors({ origin: true }));
 app.use(cors({
     credentials: true,
-    origin: 'http://localhost:3001',
+    origin: process.env.URL_REACT_SERVER,
 }));
 
 app.use(function (req, res, next) {
