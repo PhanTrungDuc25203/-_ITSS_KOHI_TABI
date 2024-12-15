@@ -30,6 +30,10 @@ let initWebRoutes = (app) => {
     router.get('/api/get-coffee-shop-recent', userController.getCoffeeShopRecent);
     router.get('/api/signup', userController.handleSignUp);
 
+    router.get('/api/getuserdata', userController.getUserProfileData);
+    router.get('/api/saveuserdata', userController.saveUserProfileData);
+
+
     return app.use("/", router);
 }
 module.exports = initWebRoutes;

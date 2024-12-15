@@ -1,5 +1,6 @@
 import db from "../models/index";
 import bcrypt from "bcryptjs";
+import { name } from "ejs";
 import { Sequelize } from 'sequelize';
 
 const salt = bcrypt.genSaltSync(10);
@@ -12,7 +13,7 @@ let handleLoginService = (usernameOrEmail, password) => {
             if (isExist) {
 
                 let user = await db.User.findOne({
-                    attributes: ['id', 'email', 'role', 'password', 'name'],
+                    attributes: ['email', 'role', 'password', 'name'],
                     where: { email: usernameOrEmail },
                     raw: true,
 
@@ -22,12 +23,12 @@ let handleLoginService = (usernameOrEmail, password) => {
                     let check = await bcrypt.compareSync(password, user.password);
                     if (check) {
                         userData.errCode = 0;
-                        userData.errMessage = 'Login successfully';
+                        userData.errMessage = 'Login succesfully';
                         delete user.password;
                         userData.user = user;
                     } else {
                         userData.errCode = 2;
-                        userData.errMessage = 'Wrong password';
+                        userData.errMessage = 'Wrong pasword';
                     }
                 } else {
                     userData.errCode = 1;
@@ -306,28 +307,10 @@ let getCoffeeShopForYouService = (email) => {
                         }
                     });
 
-                    let coffeeShopIntersection = coffeeShopByDrink;  // Bắt đầu với coffeeShopByDrink
-
-                    // Kiểm tra nếu coffeeShopIntersection không rỗng
-                    if (coffeeShopIntersection.length === 0) {
-                        coffeeShopIntersection = coffeeShopByAmenity;  // Nếu rỗng, tiếp tục với coffeeShopByAmenity
-                    }
-
-                    if (coffeeShopIntersection.length === 0) {
-                        coffeeShopIntersection = coffeeShopByDrink.filter(cid => coffeeShopByAmenity.includes(cid)); // Giao coffeeShopByDrink và coffeeShopByAmenity
-                    }
-
-                    if (coffeeShopIntersection.length === 0) {
-                        coffeeShopIntersection = coffeeShopIntersection.filter(cid => coffeeShopByService.includes(cid)); // Giao với coffeeShopByService
-                    }
-
-                    if (coffeeShopIntersection.length === 0) {
-                        coffeeShopIntersection = coffeeShopIntersection.filter(cid => coffeeShopByStyle.includes(cid)); // Giao với coffeeShopByStyle
-                    }
-
-                    if (coffeeShopIntersection.length === 0) {
-                        coffeeShopIntersection = coffeeShopIntersection.filter(cid => coffeeShopsByTime.includes(cid)); // Giao với coffeeShopsByTime
-                    }
+                    let coffeeShopIntersection = coffeeShopByAmenity.filter(cid =>
+                        coffeeShopByDrink.includes(cid) && coffeeShopByStyle.includes(cid) &&
+                        coffeeShopByService.includes(cid) && coffeeShopsByTime.includes(cid)
+                    )
 
                     const coffeeShops = await db.CoffeeShop.findAll({
                         where: {
@@ -475,6 +458,27 @@ const createUser = async (username, password, email, phone) => {
     }
 };
 
+let getProfileData = (email) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let user = await db.User.findOne({
+                where: {
+                    email : email
+                }
+            });
+
+            resolve({
+                errCode: 0,
+                errMessage: 'Successfully fetched data!',
+                user,
+            });
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
+
 let getCoffeeShopRecentService = () => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -504,6 +508,44 @@ let getCoffeeShopRecentService = () => {
     })
 }
 
+let saveProfileData = (email, phone, name, address) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            // Tìm người dùng với email đã cho
+            let user = await db.User.findOne({
+                where: {
+                    email: email
+                }
+            });
+
+            if (user) {
+                // Cập nhật các thông tin mới
+                user.phoneNumber = phone;
+                user.name = name;
+                user.address = address;
+                await user.save(); // Lưu thay đổi vào database
+
+                resolve({
+                    errCode: 0,
+                    errMessage: 'Profile updated successfully!',
+                });
+            } else {
+                resolve({
+                    errCode: 1,
+                    errMessage: 'User not found!',
+                });
+            }
+        } catch (e) {
+            reject({
+                errCode: 500,
+                errMessage: 'Internal server error!',
+                error: e
+            });
+        }
+    });
+};
+
+
 module.exports = {
     handleLoginService: handleLoginService,
     saveUserPreferenceService: saveUserPreferenceService,
@@ -512,4 +554,6 @@ module.exports = {
     searchCoffeShopService: searchCoffeShopService,
     createUser: createUser,
     getCoffeeShopRecentService: getCoffeeShopRecentService,
+    getProfileData: getProfileData,
+    saveProfileData: saveProfileData,
 }
