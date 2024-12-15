@@ -116,10 +116,61 @@ let isFavoriteCoffeeShop = async (req, res) => {
     }
 };
 
+let removeFavoriteCoffeeShop = async (req, res) => {
+    try {
+        let userId = req.body.user_id;
+        let coffeeShopId = req.body.coffee_shop_id;
+
+        let favorite = await db.Favorite_list.findOne({
+            where: {
+                uid: userId,
+                cid: coffeeShopId
+            }
+        });
+
+        if (!favorite) {
+            return res.status(404).json({ error: 'Favorite not found' });
+        }
+
+        await favorite.destroy();
+
+        return res.json({ message: 'Favorite removed' });
+
+    } catch (error) {
+        console.error('Error removing favorite coffee shop:', error);
+        return res.status(500).json({ error: error.message });
+    }
+};
+
+let getListFavoriteCoffeeShop = async (req, res) => {
+    try {
+        let userId = req.params.id;
+        let data = await db.Favorite_list.findAll({
+            where: { uid: userId },
+            include: [
+                {
+                    model: db.CoffeeShop,
+                    as: 'coffeeShop'
+                }
+            ]
+        });
+        if (data) {
+            return res.json({ data, errCode: 0 });
+        } else {
+            return res.status(404).json({ error: 'Error' });
+        }
+    } catch (error) {
+        console.error('Error fetching users favoriting coffee shop:', error);
+        return res.status(500).json({ error: error.message });
+    }
+};
+
 module.exports = {
     getAllCoffeeShops: getAllCoffeeShops,
     getCoffeeShopById: getCoffeeShopById,
     addFavoriteCoffeeShop: addFavoriteCoffeeShop,
     getUsersFavoritingCoffeeShop: getUsersFavoritingCoffeeShop,
     isFavoriteCoffeeShop: isFavoriteCoffeeShop,
+    removeFavoriteCoffeeShop: removeFavoriteCoffeeShop,
+    getListFavoriteCoffeeShop: getListFavoriteCoffeeShop,
 };
