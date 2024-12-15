@@ -479,7 +479,35 @@ let getProfileData = (email) => {
 }
 
 
+let getCoffeeShopRecentService = () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let recentShop = await db.CoffeeShop.findAll({
+                order: [
+                    ['updatedAt', 'DESC']
+                ],
+                limit: 10
+            })
 
+            if (recentShop) {
+                resolve({
+                    recentShop: recentShop,
+                    errCode: 0,
+                    errMessage: 'Get recently favorite coffee shop successfully!',
+                })
+            } else {
+                resolve({
+                    recentShop: [],
+                    errCode: 0,
+                    sudo /opt/lampp/xampp start
+                    errMessage: 'No recently favorite coffee shop!',
+                })
+            }
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
 
 module.exports = {
     handleLoginService: handleLoginService,
@@ -488,5 +516,6 @@ module.exports = {
     getCoffeeShopForYouService: getCoffeeShopForYouService,
     searchCoffeShopService: searchCoffeShopService,
     createUser: createUser,
+    getCoffeeShopRecentService: getCoffeeShopRecentService,
     getProfileData: getProfileData,
 }

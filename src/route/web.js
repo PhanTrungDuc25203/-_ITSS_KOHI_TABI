@@ -16,15 +16,17 @@ let initWebRoutes = (app) => {
     //get-all-coffee-shop api
     router.get('/api/get-all-coffee-shop', coffeeShopController.getAllCoffeeShops);
     router.get('/api/get-coffee-shop/:id', coffeeShopController.getCoffeeShopById);
+    router.get('/api/get-users-favoriting-coffee-shop/:id', coffeeShopController.getUsersFavoritingCoffeeShop);
+    router.get('/api/is-favorite-coffee-shop', coffeeShopController.isFavoriteCoffeeShop);
 
     //user-preference api
     router.post('/api/save-user-preference', userController.saveUserPreference);
     router.post('/api/add-favorite-coffee-shop', coffeeShopController.addFavoriteCoffeeShop); // Thêm route ở đây
     router.get('/api/get-data-for-select-box-user-preference-page', userController.getDataForSelectBoxUserPreferencePage);
     router.get('/api/get-coffee-shop-for-you', userController.getCoffeeShopForYou);
-    router.get('/api/search-coffeshop',userController.searchCoffeShop);
-
-    router.get('/api/signup',userController.handleSignUp);
+    router.get('/api/search-coffeshop', userController.searchCoffeShop);
+    router.get('/api/get-coffee-shop-recent', userController.getCoffeeShopRecent);
+    router.get('/api/signup', userController.handleSignUp);
 
     router.get('/api/getuserdata', userController.getUserProfileData);
 

@@ -72,8 +72,54 @@ let addFavoriteCoffeeShop = async (req, res) => {
     }
 };
 
+let getUsersFavoritingCoffeeShop = async (req, res) => {
+    try {
+        let coffeeShopId = req.params.id;
+        let data = await db.Favorite_list.findAll({
+            where: { cid: coffeeShopId },
+            include: [
+                {
+                    model: db.User,
+                    as: 'user'
+                }
+            ]
+        });
+        if (data) {
+            return res.json({ data, errCode: 0 });
+        } else {
+            return res.status(404).json({ error: 'No users found for this coffee shop' });
+        }
+    } catch (error) {
+        console.error('Error fetching users favoriting coffee shop:', error);
+        return res.status(500).json({ error: error.message });
+    }
+};
+
+let isFavoriteCoffeeShop = async (req, res) => {
+    try {
+        let userId = req.query.user_id;
+        let coffeeShopId = req.query.coffee_shop_id;
+        let data = await db.Favorite_list.findOne({
+            where: {
+                uid: userId,
+                cid: coffeeShopId
+            }
+        });
+        if (data) {
+            return res.json({ isFavorite: true });
+        } else {
+            return res.json({ isFavorite: false });
+        }
+    } catch (error) {
+        console.error('Error checking favorite coffee shop:', error);
+        return res.status(500).json({ error: error.message });
+    }
+};
+
 module.exports = {
     getAllCoffeeShops: getAllCoffeeShops,
     getCoffeeShopById: getCoffeeShopById,
     addFavoriteCoffeeShop: addFavoriteCoffeeShop,
+    getUsersFavoritingCoffeeShop: getUsersFavoritingCoffeeShop,
+    isFavoriteCoffeeShop: isFavoriteCoffeeShop,
 };
