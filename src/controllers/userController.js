@@ -172,6 +172,7 @@ const handleSignUp = async (req, res) => {
     }
 };
 
+
 const getUserProfileData = async (req, res) => {
     try {
         let email = req.query.email;
@@ -204,6 +205,41 @@ const getUserProfileData = async (req, res) => {
     }
 };
 
+const saveUserProfileData = async (req, res) => {
+    try {
+        let email = req.query.email;
+        let phone = req.query.phone;
+        let name = req.query.name;
+        let address = req.query.address;
+
+        // Kiểm tra input cơ bản
+        if (!email || !phone || !name|| !address) {
+            return res.status(400).json({
+                errCode: 1,
+                message: 'Missing required fields!',
+            });
+        }
+
+
+        // Gọi service để xử lý tạo user
+        const result = await userService.saveProfileData(email,phone,name,address);
+
+        // Xử lý kết quả trả về từ service
+        if (result.errCode !== 0) {
+            return res.status(400).json(result);
+        }
+
+        return res.status(200).json(result);
+
+    } catch (error) {
+        console.error('Error in get user data:', error);
+        return res.status(500).json({
+            errCode: -1,
+            message: 'An error occurred while saving data. Please try again later.',
+        });
+    }
+};
+
 
 module.exports = {
     handleLogin: handleLogin,
@@ -214,4 +250,5 @@ module.exports = {
     handleSignUp: handleSignUp,
     getCoffeeShopRecent: getCoffeeShopRecent,
     getUserProfileData: getUserProfileData,
+    saveUserProfileData: saveUserProfileData,
 }

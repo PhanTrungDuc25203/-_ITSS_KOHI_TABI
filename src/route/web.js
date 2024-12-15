@@ -29,6 +29,8 @@ let initWebRoutes = (app) => {
     router.get('/api/signup', userController.handleSignUp);
 
     router.get('/api/getuserdata', userController.getUserProfileData);
+    router.get('/api/saveuserdata', userController.saveUserProfileData);
+
 
     return app.use("/", router);
 }

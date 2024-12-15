@@ -508,6 +508,44 @@ let getCoffeeShopRecentService = () => {
     })
 }
 
+let saveProfileData = (email, phone, name, address) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            // Tìm người dùng với email đã cho
+            let user = await db.User.findOne({
+                where: {
+                    email: email
+                }
+            });
+
+            if (user) {
+                // Cập nhật các thông tin mới
+                user.phoneNumber = phone;
+                user.name = name;
+                user.address = address;
+                await user.save(); // Lưu thay đổi vào database
+
+                resolve({
+                    errCode: 0,
+                    errMessage: 'Profile updated successfully!',
+                });
+            } else {
+                resolve({
+                    errCode: 1,
+                    errMessage: 'User not found!',
+                });
+            }
+        } catch (e) {
+            reject({
+                errCode: 500,
+                errMessage: 'Internal server error!',
+                error: e
+            });
+        }
+    });
+};
+
+
 module.exports = {
     handleLoginService: handleLoginService,
     saveUserPreferenceService: saveUserPreferenceService,
@@ -517,4 +555,5 @@ module.exports = {
     createUser: createUser,
     getCoffeeShopRecentService: getCoffeeShopRecentService,
     getProfileData: getProfileData,
+    saveProfileData: saveProfileData,
 }
