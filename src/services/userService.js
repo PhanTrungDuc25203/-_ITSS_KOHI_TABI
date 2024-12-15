@@ -1,5 +1,6 @@
 import db from "../models/index";
 import bcrypt from "bcryptjs";
+import { name } from "ejs";
 import { Sequelize } from 'sequelize';
 
 const salt = bcrypt.genSaltSync(10);
@@ -457,6 +458,27 @@ const createUser = async (username, password, email, phone) => {
     }
 };
 
+let getProfileData = (email) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let user = await db.User.findOne({
+                where: {
+                    email : email
+                }
+            });
+
+            resolve({
+                errCode: 0,
+                errMessage: 'Successfully fetched data!',
+                user,
+            });
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
+
 
 
 module.exports = {
@@ -466,4 +488,5 @@ module.exports = {
     getCoffeeShopForYouService: getCoffeeShopForYouService,
     searchCoffeShopService: searchCoffeShopService,
     createUser: createUser,
+    getProfileData: getProfileData,
 }
