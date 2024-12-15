@@ -499,7 +499,6 @@ let getCoffeeShopRecentService = () => {
                 resolve({
                     recentShop: [],
                     errCode: 0,
-                    sudo /opt/lampp/xampp start
                     errMessage: 'No recently favorite coffee shop!',
                 })
             }
