@@ -74,7 +74,6 @@ let searchCoffeShop = async (req, res) => {
     console.log("Dit cu may");
     try {
         let name = req.query.name;
-        let province = req.query.province;
         let min_price = req.query.min_price;
         let max_price = req.query.max_price;
         let open_time = req.query.open_time;
@@ -85,16 +84,9 @@ let searchCoffeShop = async (req, res) => {
         let amenity = req.query.amenity;
 
 
-        if (!name || !province || !min_price || !max_price || !open_time || !end_time || !waiting_time || !style || !service || !amenity) {
-            return res.status(400).json({
-                errCode: 1,
-                message: 'All search parameters are required and cannot be empty!'
-            });
-        }
 
         let searchCriteria = {
             name,
-            province,
             min_price,
             max_price,
             open_time,

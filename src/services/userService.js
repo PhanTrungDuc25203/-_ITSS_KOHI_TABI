@@ -13,7 +13,7 @@ let handleLoginService = (usernameOrEmail, password) => {
             if (isExist) {
 
                 let user = await db.User.findOne({
-                    attributes: ['email', 'role', 'password', 'name'],
+                    attributes: ['id','email', 'role', 'password', 'name'],
                     where: { email: usernameOrEmail },
                     raw: true,
 
@@ -348,7 +348,6 @@ let searchCoffeShopService = async (criteria) => {
         try {
             const {
                 name,
-                province,
                 min_price,
                 max_price,
                 open_time,
@@ -359,57 +358,57 @@ let searchCoffeShopService = async (criteria) => {
                 amenity
             } = criteria;
 
-            // Xây dựng truy vấn dựa trên các tiêu chí tìm kiếm
+            // Xây dựng điều kiện where dựa trên các thuộc tính được truyền vào
+            let whereClause = {};
+
+            if (name) whereClause.name = { [db.Sequelize.Op.like]: `%${name}%` };
+            if (min_price) whereClause.min_price = { [db.Sequelize.Op.gte]: min_price };
+            if (max_price) whereClause.max_price = { [db.Sequelize.Op.lte]: max_price };
+            if (open_time) whereClause.open_hour = { [db.Sequelize.Op.lte]: open_time };
+            if (end_time) whereClause.close_hour = { [db.Sequelize.Op.gte]: end_time };
+            if (waiting_time) whereClause.waiting_time = waiting_time;
+            if (style) whereClause.style = style;
+
+            // Xây dựng điều kiện include cho các bảng quan hệ
+            let includeClause = [];
+            if (service) {
+                includeClause.push({
+                    model: db.Include_service,
+                    where: { sid: service },
+                    required: true,
+                    as: 'includeService'
+                });
+            }
+
+            if (amenity) {
+                includeClause.push({
+                    model: db.Include_amenity,
+                    where: { aid: amenity },
+                    required: true,
+                    as: 'includeAmenity'
+                });
+            }
+
+            // Thực hiện truy vấn
             let coffeShops = await db.CoffeeShop.findAll({
-                where: {
-                    name: {
-                        [db.Sequelize.Op.like]: `%${name}%`
-                    },
-                    [db.Sequelize.Op.or]: [
-                        { province_vie: province },
-                        { province_jap: province }
-                    ],
-                    min_price: {
-                        [db.Sequelize.Op.gte]: min_price
-                    },
-                    max_price: {
-                        [db.Sequelize.Op.lte]: max_price
-                    },
-                    open_hour: {
-                        [db.Sequelize.Op.lte]: open_time
-                    },
-                    close_hour: {
-                        [db.Sequelize.Op.gte]: end_time
-                    },
-                    waiting_time,
-                    style
-                },
-                include: [
-                    {
-                        model: db.Include_service,
-                        where: { sid: service },
-                        required: true, // Bắt buộc phải có service phù hợp
-                        as: 'includeService'
-                    },
-                    {
-                        model: db.Include_amenity,
-                        where: { aid: amenity },
-                        required: true, // Bắt buộc phải có amenity phù hợp
-                        as: 'includeAmenity'
-                    }
-                ],
-                attributes: ['cid', 'name', 'province_vie', 'province_jap', 'min_price', 'max_price', 'open_hour', 'close_hour', 'waiting_time', 'style']
+                where: whereClause,
+                include: includeClause,
+                attributes: [
+                    'cid', 'name', 'province_vie', 'province_jap',
+                    'min_price', 'max_price', 'open_hour',
+                    'close_hour', 'waiting_time', 'style'
+                ]
             });
 
             // Resolve với kết quả tìm kiếm
             resolve(coffeShops);
         } catch (error) {
             console.error("Error in searchCoffeShopService: ", error);
-            // Reject với lỗi nếu có
             reject(error);
         }
     });
-}
+};
+
 
 
 const createUser = async (username, password, email, phone) => {
