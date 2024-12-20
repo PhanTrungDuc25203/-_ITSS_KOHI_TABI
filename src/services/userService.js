@@ -610,6 +610,31 @@ let getAllCoffeeShopsService = async () => {
     })
 }
 
+let deleteCoffeeShopByAdminService = async (cid) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let shop = await db.CoffeeShop.findOne({
+                where: { cid: cid },
+                raw: false,
+            })
+            if (!shop) {
+                resolve({
+                    errCode: 2,
+                    errMessage: 'Coffee shop is not exist!'
+                })
+            } else {
+                await shop.destroy();
+                resolve({
+                    errCode: 0,
+                    message: 'Coffee shop has been deleted successfully'
+                })
+            }
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
 module.exports = {
     handleLoginService: handleLoginService,
     saveUserPreferenceService: saveUserPreferenceService,
@@ -622,4 +647,5 @@ module.exports = {
     saveProfileData: saveProfileData,
     adminChangePasswordService: adminChangePasswordService,
     getAllCoffeeShopsService: getAllCoffeeShopsService,
+    deleteCoffeeShopByAdminService: deleteCoffeeShopByAdminService,
 }

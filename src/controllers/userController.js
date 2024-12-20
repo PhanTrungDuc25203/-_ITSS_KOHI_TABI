@@ -272,6 +272,30 @@ let getAllCoffeeShops = async (req, res) => {
     }
 }
 
+let deleteCoffeeShopByAdmin = async (req, res) => {
+    try {
+        let idShopToDelete = req.body.cid;
+        let data = await userService.deleteCoffeeShopByAdminService(idShopToDelete);
+        if (data && data.errCode === 0) {
+            return res.status(200).json({
+                errCode: 0,
+                errMessage: 'Delete coffee shop successfully!',
+            });
+        } else {
+            return res.status(200).json({
+                errCode: 1,
+                errMessage: 'Delete coffee shop fail!'
+            });
+        }
+    } catch (error) {
+        console.error('Error in delete coffee shop:', error);
+        return res.status(500).json({
+            errCode: -1,
+            message: 'Delete coffee shop error from server!',
+        });
+    }
+}
+
 module.exports = {
     handleLogin: handleLogin,
     saveUserPreference: saveUserPreference,
@@ -284,4 +308,5 @@ module.exports = {
     saveUserProfileData: saveUserProfileData,
     adminChangePassword: adminChangePassword,
     getAllCoffeeShops: getAllCoffeeShops,
+    deleteCoffeeShopByAdmin: deleteCoffeeShopByAdmin,
 }
