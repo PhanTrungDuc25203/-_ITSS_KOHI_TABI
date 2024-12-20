@@ -13,7 +13,7 @@ let handleLoginService = (usernameOrEmail, password) => {
             if (isExist) {
 
                 let user = await db.User.findOne({
-                    attributes: ['id','email', 'role', 'password', 'name'],
+                    attributes: ['id', 'email', 'role', 'password', 'name'],
                     where: { email: usernameOrEmail },
                     raw: true,
 
@@ -462,7 +462,7 @@ let getProfileData = (email) => {
         try {
             let user = await db.User.findOne({
                 where: {
-                    email : email
+                    email: email
                 }
             });
 
@@ -544,6 +544,47 @@ let saveProfileData = (email, phone, name, address) => {
     });
 };
 
+let adminChangePasswordService = async (email, oldPassword, newPassword) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            // Fetch user by email
+            let user = await db.User.findOne({
+                where: { email: email },
+            });
+
+            if (!user) {
+                return resolve({
+                    errCode: 1,
+                    errMessage: "User not found!"
+                });
+            } else {
+                // Check if the old password matches the stored hashed password
+                let isMatch = await bcrypt.compareSync(oldPassword, user.password);
+
+                if (!isMatch) {
+                    return resolve({
+                        errCode: 2,
+                        errMessage: "Old password is incorrect"
+                    })
+                } else {
+                    // Hash the new password
+                    const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+                    // Update the password in the database
+                    user.password = hashedPassword;
+                    await user.save();
+
+                    resolve({
+                        errCode: 0,
+                        errMessage: "Password updated successfully"
+                    })
+                }
+            }
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
 
 module.exports = {
     handleLoginService: handleLoginService,
@@ -555,4 +596,5 @@ module.exports = {
     getCoffeeShopRecentService: getCoffeeShopRecentService,
     getProfileData: getProfileData,
     saveProfileData: saveProfileData,
+    adminChangePasswordService: adminChangePasswordService,
 }

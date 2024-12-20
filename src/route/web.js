@@ -33,6 +33,9 @@ let initWebRoutes = (app) => {
     router.get('/api/getuserdata', userController.getUserProfileData);
     router.get('/api/saveuserdata', userController.saveUserProfileData);
 
+    //admin
+    router.post('/api/admin-change-password', userController.adminChangePassword);
+
 
     return app.use("/", router);
 }
