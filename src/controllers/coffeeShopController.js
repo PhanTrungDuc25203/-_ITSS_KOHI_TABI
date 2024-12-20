@@ -1,3 +1,4 @@
+import { at } from 'lodash';
 import db from '../models/index';
 
 let getAllCoffeeShops = async (req, res) => {
@@ -24,7 +25,7 @@ let getCoffeeShopById = async (req, res) => {
                     model: db.Drink,
                     through: {
                         model: db.Include_drink,
-                        attributes: []
+                        attributes: ['price']
                     },
                     as: 'drinks'
                 }
