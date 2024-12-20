@@ -296,6 +296,19 @@ let deleteCoffeeShopByAdmin = async (req, res) => {
     }
 }
 
+let getMostFavoriteShop = async (req, res) => {
+    try {
+        let data = await userService.getMostFavoriteShopService();
+        return res.status(200).json(data);
+    } catch (e) {
+        console.log(e);
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: `Get most favorite coffee shop error!`
+        })
+    }
+}
+
 module.exports = {
     handleLogin: handleLogin,
     saveUserPreference: saveUserPreference,
@@ -309,4 +322,5 @@ module.exports = {
     adminChangePassword: adminChangePassword,
     getAllCoffeeShops: getAllCoffeeShops,
     deleteCoffeeShopByAdmin: deleteCoffeeShopByAdmin,
+    getMostFavoriteShop: getMostFavoriteShop
 }

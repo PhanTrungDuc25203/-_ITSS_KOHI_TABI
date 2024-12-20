@@ -635,6 +635,51 @@ let deleteCoffeeShopByAdminService = async (cid) => {
     })
 }
 
+let getMostFavoriteShopService = async () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let favoriteIdIdShop = await db.Favorite_list.findOne({
+                attributes: [
+                    'cid',
+                    [db.sequelize.fn('COUNT', db.sequelize.col('cid')), 'count']
+                ],
+                group: ['cid'],
+                order: [[db.sequelize.literal('count'), 'DESC']],
+                limit: 1
+            })
+
+            if (favoriteIdIdShop) {
+                let favoriteShop = await db.CoffeeShop.findOne({
+                    where: { cid: favoriteIdIdShop.cid },
+                    attributes: ['name']
+                })
+
+                if (favoriteShop) {
+                    resolve({
+                        favoriteShop: favoriteShop,
+                        errCode: 0,
+                        errMessage: 'Get most favorite coffee shop successfully!',
+                    })
+                } else {
+                    resolve({
+                        favoriteShop: '',
+                        errCode: 0,
+                        errMessage: 'No most favorite coffee shop!',
+                    })
+                }
+            } else {
+                resolve({
+                    favoriteShop: '',
+                    errCode: 0,
+                    errMessage: 'No most favorite coffee shop!',
+                })
+            }
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
 module.exports = {
     handleLoginService: handleLoginService,
     saveUserPreferenceService: saveUserPreferenceService,
@@ -648,4 +693,5 @@ module.exports = {
     adminChangePasswordService: adminChangePasswordService,
     getAllCoffeeShopsService: getAllCoffeeShopsService,
     deleteCoffeeShopByAdminService: deleteCoffeeShopByAdminService,
+    getMostFavoriteShopService: getMostFavoriteShopService,
 }
