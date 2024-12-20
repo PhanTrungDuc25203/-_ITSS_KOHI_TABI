@@ -35,7 +35,7 @@ let initWebRoutes = (app) => {
 
     //admin
     router.post('/api/admin-change-password', userController.adminChangePassword);
-
+    router.get('/api/get-all-coffee-shops', userController.getAllCoffeeShops);
 
     return app.use("/", router);
 }

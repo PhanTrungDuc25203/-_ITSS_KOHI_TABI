@@ -586,6 +586,30 @@ let adminChangePasswordService = async (email, oldPassword, newPassword) => {
     })
 }
 
+let getAllCoffeeShopsService = async () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let shop = await db.CoffeeShop.findAll({})
+
+            if (shop) {
+                resolve({
+                    shop: shop,
+                    errCode: 0,
+                    errMessage: 'Get all coffee shop successfully!',
+                })
+            } else {
+                resolve({
+                    recentShop: [],
+                    errCode: 0,
+                    errMessage: 'No recently favorite coffee shop!',
+                })
+            }
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
 module.exports = {
     handleLoginService: handleLoginService,
     saveUserPreferenceService: saveUserPreferenceService,
@@ -597,4 +621,5 @@ module.exports = {
     getProfileData: getProfileData,
     saveProfileData: saveProfileData,
     adminChangePasswordService: adminChangePasswordService,
+    getAllCoffeeShopsService: getAllCoffeeShopsService,
 }

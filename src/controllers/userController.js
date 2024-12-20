@@ -250,6 +250,28 @@ let adminChangePassword = async (req, res) => {
     })
 }
 
+let getAllCoffeeShops = async (req, res) => {
+    try {
+        let infor = await userService.getAllCoffeeShopsService();
+
+        if (infor.errCode !== 0) {
+            return res.status(400).json({
+                errCode: infor.errCode,
+                errMessage: 'Get all Coffee Shop information error!'
+            });
+        }
+
+        return res.status(200).json(infor);
+
+    } catch (error) {
+        console.error('Error in get user data:', error);
+        return res.status(500).json({
+            errCode: -1,
+            message: 'An error occurred while getting data. Please try again later.',
+        });
+    }
+}
+
 module.exports = {
     handleLogin: handleLogin,
     saveUserPreference: saveUserPreference,
@@ -261,4 +283,5 @@ module.exports = {
     getUserProfileData: getUserProfileData,
     saveUserProfileData: saveUserProfileData,
     adminChangePassword: adminChangePassword,
+    getAllCoffeeShops: getAllCoffeeShops,
 }
