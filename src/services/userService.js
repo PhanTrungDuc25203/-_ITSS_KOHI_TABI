@@ -462,7 +462,7 @@ let getProfileData = (email) => {
         try {
             let user = await db.User.findOne({
                 where: {
-                    email : email
+                    email: email
                 }
             });
 
@@ -544,6 +544,141 @@ let saveProfileData = (email, phone, name, address) => {
     });
 };
 
+let adminChangePasswordService = async (email, oldPassword, newPassword) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            // Fetch user by email
+            let user = await db.User.findOne({
+                where: { email: email },
+            });
+
+            if (!user) {
+                return resolve({
+                    errCode: 1,
+                    errMessage: "User not found!"
+                });
+            } else {
+                // Check if the old password matches the stored hashed password
+                let isMatch = await bcrypt.compareSync(oldPassword, user.password);
+
+                if (!isMatch) {
+                    return resolve({
+                        errCode: 2,
+                        errMessage: "Old password is incorrect"
+                    })
+                } else {
+                    // Hash the new password
+                    const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+                    // Update the password in the database
+                    user.password = hashedPassword;
+                    await user.save();
+
+                    resolve({
+                        errCode: 0,
+                        errMessage: "Password updated successfully"
+                    })
+                }
+            }
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
+let getAllCoffeeShopsService = async () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let shop = await db.CoffeeShop.findAll({})
+
+            if (shop) {
+                resolve({
+                    shop: shop,
+                    errCode: 0,
+                    errMessage: 'Get all coffee shop successfully!',
+                })
+            } else {
+                resolve({
+                    recentShop: [],
+                    errCode: 0,
+                    errMessage: 'No recently favorite coffee shop!',
+                })
+            }
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
+let deleteCoffeeShopByAdminService = async (cid) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let shop = await db.CoffeeShop.findOne({
+                where: { cid: cid },
+                raw: false,
+            })
+            if (!shop) {
+                resolve({
+                    errCode: 2,
+                    errMessage: 'Coffee shop is not exist!'
+                })
+            } else {
+                await shop.destroy();
+                resolve({
+                    errCode: 0,
+                    message: 'Coffee shop has been deleted successfully'
+                })
+            }
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
+let getMostFavoriteShopService = async () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let favoriteIdIdShop = await db.Favorite_list.findOne({
+                attributes: [
+                    'cid',
+                    [db.sequelize.fn('COUNT', db.sequelize.col('cid')), 'count']
+                ],
+                group: ['cid'],
+                order: [[db.sequelize.literal('count'), 'DESC']],
+                limit: 1
+            })
+
+            if (favoriteIdIdShop) {
+                let favoriteShop = await db.CoffeeShop.findOne({
+                    where: { cid: favoriteIdIdShop.cid },
+                    attributes: ['name']
+                })
+
+                if (favoriteShop) {
+                    resolve({
+                        favoriteShop: favoriteShop,
+                        errCode: 0,
+                        errMessage: 'Get most favorite coffee shop successfully!',
+                    })
+                } else {
+                    resolve({
+                        favoriteShop: '',
+                        errCode: 0,
+                        errMessage: 'No most favorite coffee shop!',
+                    })
+                }
+            } else {
+                resolve({
+                    favoriteShop: '',
+                    errCode: 0,
+                    errMessage: 'No most favorite coffee shop!',
+                })
+            }
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
 
 module.exports = {
     handleLoginService: handleLoginService,
@@ -555,4 +690,8 @@ module.exports = {
     getCoffeeShopRecentService: getCoffeeShopRecentService,
     getProfileData: getProfileData,
     saveProfileData: saveProfileData,
+    adminChangePasswordService: adminChangePasswordService,
+    getAllCoffeeShopsService: getAllCoffeeShopsService,
+    deleteCoffeeShopByAdminService: deleteCoffeeShopByAdminService,
+    getMostFavoriteShopService: getMostFavoriteShopService,
 }

@@ -170,7 +170,7 @@ const getUserProfileData = async (req, res) => {
         let email = req.query.email;
 
         // Kiểm tra input cơ bản
-        if (!email ) {
+        if (!email) {
             return res.status(400).json({
                 errCode: 1,
                 message: 'Missing required fields!',
@@ -205,7 +205,7 @@ const saveUserProfileData = async (req, res) => {
         let address = req.query.address;
 
         // Kiểm tra input cơ bản
-        if (!email || !phone || !name|| !address) {
+        if (!email || !phone || !name || !address) {
             return res.status(400).json({
                 errCode: 1,
                 message: 'Missing required fields!',
@@ -214,7 +214,7 @@ const saveUserProfileData = async (req, res) => {
 
 
         // Gọi service để xử lý tạo user
-        const result = await userService.saveProfileData(email,phone,name,address);
+        const result = await userService.saveProfileData(email, phone, name, address);
 
         // Xử lý kết quả trả về từ service
         if (result.errCode !== 0) {
@@ -232,6 +232,82 @@ const saveUserProfileData = async (req, res) => {
     }
 };
 
+let adminChangePassword = async (req, res) => {
+    let email = req.body.email;
+    let oldPassword = req.body.oldPassword;
+    let newPassword = req.body.newPassword;
+    if (!email || !oldPassword || !newPassword) {
+        return res.status(500).json({
+            errCode: 1,
+            message: 'Missing input parameter(s)!'
+        })
+    }
+
+    let data = await userService.adminChangePasswordService(email, oldPassword, newPassword)
+    return res.status(200).json({
+        errCode: data.errCode,
+        message: data.errMessage
+    })
+}
+
+let getAllCoffeeShops = async (req, res) => {
+    try {
+        let infor = await userService.getAllCoffeeShopsService();
+
+        if (infor.errCode !== 0) {
+            return res.status(400).json({
+                errCode: infor.errCode,
+                errMessage: 'Get all Coffee Shop information error!'
+            });
+        }
+
+        return res.status(200).json(infor);
+
+    } catch (error) {
+        console.error('Error in get user data:', error);
+        return res.status(500).json({
+            errCode: -1,
+            message: 'An error occurred while getting data. Please try again later.',
+        });
+    }
+}
+
+let deleteCoffeeShopByAdmin = async (req, res) => {
+    try {
+        let idShopToDelete = req.body.cid;
+        let data = await userService.deleteCoffeeShopByAdminService(idShopToDelete);
+        if (data && data.errCode === 0) {
+            return res.status(200).json({
+                errCode: 0,
+                errMessage: 'Delete coffee shop successfully!',
+            });
+        } else {
+            return res.status(200).json({
+                errCode: 1,
+                errMessage: 'Delete coffee shop fail!'
+            });
+        }
+    } catch (error) {
+        console.error('Error in delete coffee shop:', error);
+        return res.status(500).json({
+            errCode: -1,
+            message: 'Delete coffee shop error from server!',
+        });
+    }
+}
+
+let getMostFavoriteShop = async (req, res) => {
+    try {
+        let data = await userService.getMostFavoriteShopService();
+        return res.status(200).json(data);
+    } catch (e) {
+        console.log(e);
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: `Get most favorite coffee shop error!`
+        })
+    }
+}
 
 module.exports = {
     handleLogin: handleLogin,
@@ -243,4 +319,8 @@ module.exports = {
     getCoffeeShopRecent: getCoffeeShopRecent,
     getUserProfileData: getUserProfileData,
     saveUserProfileData: saveUserProfileData,
+    adminChangePassword: adminChangePassword,
+    getAllCoffeeShops: getAllCoffeeShops,
+    deleteCoffeeShopByAdmin: deleteCoffeeShopByAdmin,
+    getMostFavoriteShop: getMostFavoriteShop
 }

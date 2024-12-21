@@ -33,6 +33,11 @@ let initWebRoutes = (app) => {
     router.get('/api/getuserdata', userController.getUserProfileData);
     router.get('/api/saveuserdata', userController.saveUserProfileData);
 
+    //admin
+    router.post('/api/admin-change-password', userController.adminChangePassword);
+    router.get('/api/get-all-coffee-shops', userController.getAllCoffeeShops);
+    router.post('/api/delete-coffee-shop-by-admin', userController.deleteCoffeeShopByAdmin);
+    router.get('/api/get-most-favorite-shop', userController.getMostFavoriteShop);
 
     return app.use("/", router);
 }
