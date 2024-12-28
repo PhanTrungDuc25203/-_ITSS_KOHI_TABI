@@ -680,6 +680,98 @@ let getMostFavoriteShopService = async () => {
     })
 }
 
+let getUserPreferenceService = (email) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            // Kiểm tra dữ liệu đầu vào
+            if (!email) {
+                resolve({
+                    errCode: 1,
+                    errMessage: 'Missing required parameter!',
+                });
+            } else {
+                let user = await db.User.findOne({
+                    where: {
+                        email: email,
+
+                    },
+                    attributes: {
+                        exclude: ['id', 'userName', 'name', 'address', 'phoneNumber', 'role', 'avatar', 'password'] // Loại trừ cột email khỏi kết quả trả về
+                    },
+                    include: [
+                        {
+                            model: db.Favorite_amenity, as: 'favoriteAmenity',
+                            attributes: ['aid']
+                        },
+                        {
+                            model: db.Favorite_drink, as: 'favoriteDrink',
+                            attributes: ['did']
+                        },
+                        {
+                            model: db.Favorite_style, as: 'favoriteStyle',
+                            attributes: ['style']
+                        },
+                        {
+                            model: db.Favorite_service, as: 'favoriteService',
+                            attributes: ['sid']
+                        },
+                        {
+                            model: db.Favorite_time, as: 'favoriteTime',
+                            attributes: ['time'],
+                        },
+                        {
+                            model: db.Favorite_distance,
+                            attributes: {
+                                exclude: ['id', 'uid', 'createdAt', 'updatedAt']
+                            },
+                        },
+                    ]
+                });
+
+                if (user) {
+
+                    let amenityDetails = await db.Amenity.findAll({
+                        where: { aid: user.favoriteAmenity.map(a => a.aid) },
+                        attributes: ['name_eng', 'name_jap']
+                    })
+
+                    let drinkDetails = await db.Drink.findAll({
+                        where: { did: user.favoriteDrink.map(d => d.did) },
+                        attributes: ['name_eng', 'name_ja']
+                    })
+
+                    let serviceDetails = await db.Service.findAll({
+                        where: { sid: user.favoriteService.map(s => s.sid) },
+                        attributes: ['name_eng', 'name_jap']
+                    })
+
+                    resolve({
+                        user: {
+                            email: user.email,
+                            favoriteStyle: user.favoriteStyle,
+                            favoriteService: serviceDetails,
+                            favoriteAmenity: amenityDetails,
+                            favoriteDrink: drinkDetails,
+                            favoriteDistance: user.Favorite_distance.distance,
+                            favoriteTime: user.favoriteTime,
+
+                        },
+                        errCode: 0,
+                        errMessage: 'Get user preference successfully!',
+                    });
+                } else {
+                    resolve({
+                        errCode: 2,
+                        errMessage: 'User not found!',
+                    })
+                }
+            }
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
 module.exports = {
     handleLoginService: handleLoginService,
     saveUserPreferenceService: saveUserPreferenceService,
@@ -694,4 +786,5 @@ module.exports = {
     getAllCoffeeShopsService: getAllCoffeeShopsService,
     deleteCoffeeShopByAdminService: deleteCoffeeShopByAdminService,
     getMostFavoriteShopService: getMostFavoriteShopService,
+    getUserPreferenceService: getUserPreferenceService,
 }

@@ -16,6 +16,7 @@ module.exports = (sequelize, DataTypes) => {
             User.hasMany(models.Favorite_drink, { foreignKey: 'uid', as: 'favoriteDrink' })
             User.hasMany(models.Favorite_style, { foreignKey: 'uid', as: 'favoriteStyle' })
             User.hasMany(models.Favorite_service, { foreignKey: 'uid', as: 'favoriteService' })
+            User.hasOne(models.Favorite_distance, { foreignKey: 'uid' })
             User.hasMany(models.Favorite_time, { foreignKey: 'uid', as: 'favoriteTime' })
             User.belongsToMany(models.CoffeeShop, {
                 through: models.Favorite_list,
