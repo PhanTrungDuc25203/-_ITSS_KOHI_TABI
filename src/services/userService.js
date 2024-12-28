@@ -772,6 +772,32 @@ let getUserPreferenceService = (email) => {
     })
 }
 
+let getAllUser = async () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let users = await db.User.findAll({
+                attributes: { exclude: ['password'] } // Loại bỏ trường password khỏi kết quả
+            });
+
+            if (users && users.length > 0) {
+                resolve({
+                    users: users,
+                    errCode: 0,
+                    errMessage: 'Get all users successfully!'
+                });
+            } else {
+                resolve({
+                    users: [],
+                    errCode: 0,
+                    errMessage: 'No users found!'
+                });
+            }
+        } catch (error) {
+            reject(error);
+        }
+    });
+};
+
 module.exports = {
     handleLoginService: handleLoginService,
     saveUserPreferenceService: saveUserPreferenceService,
@@ -787,4 +813,5 @@ module.exports = {
     deleteCoffeeShopByAdminService: deleteCoffeeShopByAdminService,
     getMostFavoriteShopService: getMostFavoriteShopService,
     getUserPreferenceService: getUserPreferenceService,
+    getAllUser: getAllUser,
 }

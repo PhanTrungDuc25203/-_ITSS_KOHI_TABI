@@ -322,6 +322,18 @@ let getUserPreference = async (req, res) => {
     }
 }
 
+let getAllUser = async (req, res) => {
+    try {
+        let data = await userService.getAllUser();
+        return res.status(200).json(data);
+    } catch (e) {
+        console.log(e);
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: `Get all user khong thanh cong!`
+        })
+    }
+}
 module.exports = {
     handleLogin: handleLogin,
     saveUserPreference: saveUserPreference,
@@ -337,4 +349,5 @@ module.exports = {
     deleteCoffeeShopByAdmin: deleteCoffeeShopByAdmin,
     getMostFavoriteShop: getMostFavoriteShop,
     getUserPreference: getUserPreference,
+    getAllUser: getAllUser
 }
