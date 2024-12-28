@@ -27,6 +27,31 @@ let addAmenity = async (req, res) => {
 
 };
 
+let addAmenityToCoffeeShop = async (req, res) => {
+    try {
+
+        let cid = req.body.cid;
+        let aid = req.body.aid;
+        let price = req.body.price;
+
+        let newIncludeAmenity = await db.Include_amenity.create ({
+            cid: cid,
+            aid: aid,
+            price: price,
+        })
+
+        return res.status(201).json({
+            newIncludeAmenity,
+            errCode: 0,
+        })
+
+    } catch (error) {
+        console.error('Error adding amenity:', error);
+        res.status(500).json({ error: error.message });
+    }
+}
+
 module.exports = {
     addAmenity: addAmenity,
+    addAmenityToCoffeeShop: addAmenityToCoffeeShop,
 }

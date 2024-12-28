@@ -43,6 +43,7 @@ let initWebRoutes = (app) => {
     router.post('/api/add-drink-to-coffee-shop', coffeeShopController.addDrinkToCoffeeShop);
     router.get('/api/get-max-coffee-shop-id', coffeeShopController.getMaxCoffeeShopId);
     router.post('/api/add-amenity', amenitiesController.addAmenity);
+    router.post('/api/add-amenity-to-coffee-shop', amenitiesController.addAmenityToCoffeeShop);
 
     return app.use("/", router);
 }
