@@ -1,4 +1,4 @@
-import { at } from 'lodash';
+import { at, get } from 'lodash';
 import db from '../models/index';
 
 let getAllCoffeeShops = async (req, res) => {
@@ -166,6 +166,64 @@ let getListFavoriteCoffeeShop = async (req, res) => {
     }
 };
 
+
+let addCoffeeShop = async (req, res) => {
+    try {
+
+        let maxId = await db.CoffeeShop.max('id');
+        let cid = maxId + 1;
+        let name = req.body.name;
+        let provinceId = req.body.province_id; // Sau fix cả Nhật cả Anh đều theo id này
+        let address = req.body.address;
+        let openHour = req.body.open_hour;
+        let closeHour = req.body.close_hour;
+        let minPrice = req.body.min_price;
+        let maxPrice = req.body.max_price;
+        let desEng = req.body.description_en;
+        let desJap = req.body.description_jp;
+        let style = req.body.style;
+        let picture = req.body.picture;
+
+        let newCoffeeShop = await db.CoffeeShop.create({
+            cid: cid,
+            name: name,
+            province_vie: provinceId,
+            province_jap: provinceId,
+            address: address,
+            open_hour: openHour,
+            close_hour: closeHour,
+            min_price: minPrice,
+            max_price: maxPrice,
+            description_eng: desEng,
+            description_jap: desJap,
+            style: style,
+            picture: picture
+        });
+
+        return res.status(201).json(
+            {
+                newCoffeeShop,
+                errCode: 0,
+            }
+        );
+
+    } catch (error) {
+        console.error('Error adding coffee shop:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+
+};
+
+let getMaxCoffeeShopId = async () => {
+    try {
+        let maxId = await db.CoffeeShop.max('id');
+        return maxId;
+    } catch (error) {
+        console.error('Error fetching max coffee shop id:', error);
+        throw error;
+    }
+};
+
 module.exports = {
     getAllCoffeeShops: getAllCoffeeShops,
     getCoffeeShopById: getCoffeeShopById,
@@ -174,4 +232,6 @@ module.exports = {
     isFavoriteCoffeeShop: isFavoriteCoffeeShop,
     removeFavoriteCoffeeShop: removeFavoriteCoffeeShop,
     getListFavoriteCoffeeShop: getListFavoriteCoffeeShop,
+    addCoffeeShop: addCoffeeShop,
+    getMaxCoffeeShopId: getMaxCoffeeShopId,
 };

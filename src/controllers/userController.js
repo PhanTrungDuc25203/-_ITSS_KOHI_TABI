@@ -73,6 +73,7 @@ let getCoffeeShopRecent = async (req, res) => {
 let searchCoffeShop = async (req, res) => {
     console.log("Dit cu may");
     try {
+
         let name = req.query.name;
         let min_price = req.query.min_price;
         let max_price = req.query.max_price;
@@ -116,6 +117,7 @@ let searchCoffeShop = async (req, res) => {
         console.log(e);
         return res.status(500).json({
             errCode: -1,
+            // Lỗi ở đây
             errMessage: 'Server error while searching coffee shops!'
         });
     }
