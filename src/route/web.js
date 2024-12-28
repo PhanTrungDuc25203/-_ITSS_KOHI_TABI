@@ -3,6 +3,7 @@ import homeController from "../controllers/homeController";
 import userController from "../controllers/userController";
 import coffeeShopController from "../controllers/coffeeShopController";
 import amenitiesController from "../controllers/amenitiesController";
+import servicesController from "../controllers/servicesController";
 
 let router = express.Router();
 
@@ -44,6 +45,8 @@ let initWebRoutes = (app) => {
     router.get('/api/get-max-coffee-shop-id', coffeeShopController.getMaxCoffeeShopId);
     router.post('/api/add-amenity', amenitiesController.addAmenity);
     router.post('/api/add-amenity-to-coffee-shop', amenitiesController.addAmenityToCoffeeShop);
+    router.post('/api/add-service', servicesController.addService);
+    router.post('/api/add-service-to-coffee-shop', servicesController.addServiceToCoffeeShop);
 
     return app.use("/", router);
 }
