@@ -38,6 +38,9 @@ let initWebRoutes = (app) => {
     router.get('/api/get-all-coffee-shops', userController.getAllCoffeeShops);
     router.post('/api/delete-coffee-shop-by-admin', userController.deleteCoffeeShopByAdmin);
     router.get('/api/get-most-favorite-shop', userController.getMostFavoriteShop);
+    router.get('/api/getalluser',userController.getAllUser);
+
+
 
     return app.use("/", router);
 }
