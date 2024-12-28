@@ -23,10 +23,11 @@ let initWebRoutes = (app) => {
     router.put('/api/remove-favorite-coffee-shop', coffeeShopController.removeFavoriteCoffeeShop);
     router.get('/api/get-list-favorite-coffee-shop/:id', coffeeShopController.getListFavoriteCoffeeShop);
 
-    //user-preference api
+    //user-preference api     
     router.post('/api/save-user-preference', userController.saveUserPreference);
     router.post('/api/add-favorite-coffee-shop', coffeeShopController.addFavoriteCoffeeShop); // Thêm route ở đây
     router.get('/api/get-data-for-select-box-user-preference-page', userController.getDataForSelectBoxUserPreferencePage);
+    router.get('/api/get-user-preference', userController.getUserPreference);
     router.get('/api/get-coffee-shop-for-you', userController.getCoffeeShopForYou);
     router.get('/api/search-coffeshop', userController.searchCoffeShop);
     router.get('/api/get-coffee-shop-recent', userController.getCoffeeShopRecent);
@@ -47,6 +48,9 @@ let initWebRoutes = (app) => {
     router.post('/api/add-amenity-to-coffee-shop', amenitiesController.addAmenityToCoffeeShop);
     router.post('/api/add-service', servicesController.addService);
     router.post('/api/add-service-to-coffee-shop', servicesController.addServiceToCoffeeShop);
+    router.get('/api/getalluser',userController.getAllUser);
+
+
 
     return app.use("/", router);
 }

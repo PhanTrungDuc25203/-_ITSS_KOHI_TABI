@@ -311,6 +311,31 @@ let getMostFavoriteShop = async (req, res) => {
     }
 }
 
+let getUserPreference = async (req, res) => {
+    try {
+        let data = await userService.getUserPreferenceService(req.query.email);
+        return res.status(200).json(data);
+    } catch (e) {
+        console.log(e);
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: `Get user preference error!`
+        })
+    }
+}
+
+let getAllUser = async (req, res) => {
+    try {
+        let data = await userService.getAllUser();
+        return res.status(200).json(data);
+    } catch (e) {
+        console.log(e);
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: `Get all user khong thanh cong!`
+        })
+    }
+}
 module.exports = {
     handleLogin: handleLogin,
     saveUserPreference: saveUserPreference,
@@ -324,5 +349,7 @@ module.exports = {
     adminChangePassword: adminChangePassword,
     getAllCoffeeShops: getAllCoffeeShops,
     deleteCoffeeShopByAdmin: deleteCoffeeShopByAdmin,
-    getMostFavoriteShop: getMostFavoriteShop
+    getMostFavoriteShop: getMostFavoriteShop,
+    getUserPreference: getUserPreference,
+    getAllUser: getAllUser
 }
