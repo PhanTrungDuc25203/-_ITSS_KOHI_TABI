@@ -214,15 +214,65 @@ let addCoffeeShop = async (req, res) => {
 
 };
 
-let getMaxCoffeeShopId = async () => {
+let addDrinkToCoffeeShop = async (req, res) => {
+    try {
+
+        let cid = req.body.cid;
+        let did = await db.Drink.max('id') + 1;
+        let name_vi = req.body.name_vi;
+        let name_eng = req.body.name_eng;
+        let name_ja = req.body.name_ja;
+        let price = req.body.price;
+        let picture = req.body.picture;
+
+        let newDrink = await db.Drink.create({
+            did: did,
+            name_vi: name_vi,
+            name_eng: name_eng,
+            name_ja: name_ja,
+            price: price,
+            picture: picture,
+        });
+
+        let newIncludeDrink = await db.Include_drink.create({
+            cid: cid,
+            did: did,
+            price: price,
+        });
+
+        return res.status(201).json(
+            {
+                newDrink,
+                newIncludeDrink,
+                errCode: 0,
+            }
+        );
+
+    } catch (error) {
+        console.log("Không thêm được đồ uống!!! ", error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
+let getMaxCoffeeShopId = async (req, res) => {
     try {
         let maxId = await db.CoffeeShop.max('id');
-        return maxId;
+        return res.json({ maxId });
     } catch (error) {
         console.error('Error fetching max coffee shop id:', error);
         throw error;
     }
 };
+
+let getMaxDrinkId = async () => {
+    try {
+        let maxId = await db.Drink.max('id');
+        return maxId;
+    } catch (error) {
+        console.error('Error fetching max drink id:', error);
+        throw error;
+    }
+}
 
 module.exports = {
     getAllCoffeeShops: getAllCoffeeShops,
@@ -234,4 +284,5 @@ module.exports = {
     getListFavoriteCoffeeShop: getListFavoriteCoffeeShop,
     addCoffeeShop: addCoffeeShop,
     getMaxCoffeeShopId: getMaxCoffeeShopId,
+    addDrinkToCoffeeShop: addDrinkToCoffeeShop,
 };

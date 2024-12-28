@@ -39,6 +39,8 @@ let initWebRoutes = (app) => {
     router.post('/api/delete-coffee-shop-by-admin', userController.deleteCoffeeShopByAdmin);
     router.get('/api/get-most-favorite-shop', userController.getMostFavoriteShop);
     router.post('/api/add-coffee-shop', coffeeShopController.addCoffeeShop);
+    router.post('/api/add-drink-to-coffee-shop', coffeeShopController.addDrinkToCoffeeShop);
+    router.get('/api/get-max-coffee-shop-id', coffeeShopController.getMaxCoffeeShopId);
 
     return app.use("/", router);
 }
