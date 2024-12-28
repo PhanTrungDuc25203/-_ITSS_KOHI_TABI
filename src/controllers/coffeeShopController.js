@@ -1,3 +1,4 @@
+import { at, get } from 'lodash';
 import db from '../models/index';
 
 let getAllCoffeeShops = async (req, res) => {
@@ -24,7 +25,7 @@ let getCoffeeShopById = async (req, res) => {
                     model: db.Drink,
                     through: {
                         model: db.Include_drink,
-                        attributes: []
+                        attributes: ['price']
                     },
                     as: 'drinks'
                 }
@@ -165,6 +166,114 @@ let getListFavoriteCoffeeShop = async (req, res) => {
     }
 };
 
+
+let addCoffeeShop = async (req, res) => {
+    try {
+
+        let maxId = await db.CoffeeShop.max('id');
+        let cid = maxId + 1;
+        let name = req.body.name;
+        let provinceId = req.body.province_id; // Sau fix cả Nhật cả Anh đều theo id này
+        let address = req.body.address;
+        let openHour = req.body.open_hour;
+        let closeHour = req.body.close_hour;
+        let minPrice = req.body.min_price;
+        let maxPrice = req.body.max_price;
+        let desEng = req.body.description_en;
+        let desJap = req.body.description_jp;
+        let style = req.body.style;
+        let picture = req.body.picture;
+
+        let newCoffeeShop = await db.CoffeeShop.create({
+            cid: cid,
+            name: name,
+            province_vie: provinceId,
+            province_jap: provinceId,
+            address: address,
+            open_hour: openHour,
+            close_hour: closeHour,
+            min_price: minPrice,
+            max_price: maxPrice,
+            description_eng: desEng,
+            description_jap: desJap,
+            style: style,
+            picture: picture
+        });
+
+        return res.status(201).json(
+            {
+                newCoffeeShop,
+                errCode: 0,
+            }
+        );
+
+    } catch (error) {
+        console.error('Error adding coffee shop:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+
+};
+
+let addDrinkToCoffeeShop = async (req, res) => {
+    try {
+
+        let cid = req.body.cid;
+        let did = await db.Drink.max('id') + 1;
+        let name_vi = req.body.name_vi;
+        let name_eng = req.body.name_eng;
+        let name_ja = req.body.name_ja;
+        let price = req.body.price;
+        let picture = req.body.picture;
+
+        let newDrink = await db.Drink.create({
+            did: did,
+            name_vi: name_vi,
+            name_eng: name_eng,
+            name_ja: name_ja,
+            price: price,
+            picture: picture,
+        });
+
+        let newIncludeDrink = await db.Include_drink.create({
+            cid: cid,
+            did: did,
+            price: price,
+        });
+
+        return res.status(201).json(
+            {
+                newDrink,
+                newIncludeDrink,
+                errCode: 0,
+            }
+        );
+
+    } catch (error) {
+        console.log("Không thêm được đồ uống!!! ", error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
+let getMaxCoffeeShopId = async (req, res) => {
+    try {
+        let maxId = await db.CoffeeShop.max('id');
+        return res.json({ maxId });
+    } catch (error) {
+        console.error('Error fetching max coffee shop id:', error);
+        throw error;
+    }
+};
+
+let getMaxDrinkId = async () => {
+    try {
+        let maxId = await db.Drink.max('id');
+        return maxId;
+    } catch (error) {
+        console.error('Error fetching max drink id:', error);
+        throw error;
+    }
+}
+
 module.exports = {
     getAllCoffeeShops: getAllCoffeeShops,
     getCoffeeShopById: getCoffeeShopById,
@@ -173,4 +282,7 @@ module.exports = {
     isFavoriteCoffeeShop: isFavoriteCoffeeShop,
     removeFavoriteCoffeeShop: removeFavoriteCoffeeShop,
     getListFavoriteCoffeeShop: getListFavoriteCoffeeShop,
+    addCoffeeShop: addCoffeeShop,
+    getMaxCoffeeShopId: getMaxCoffeeShopId,
+    addDrinkToCoffeeShop: addDrinkToCoffeeShop,
 };
