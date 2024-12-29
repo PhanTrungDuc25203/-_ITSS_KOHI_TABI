@@ -49,6 +49,7 @@ let initWebRoutes = (app) => {
     router.post('/api/add-service', servicesController.addService);
     router.post('/api/add-service-to-coffee-shop', servicesController.addServiceToCoffeeShop);
     router.get('/api/getalluser',userController.getAllUser);
+    router.get('/api/get-coffee-shop-data/:id', coffeeShopController.getCoffeeShopData);
 
 
 
