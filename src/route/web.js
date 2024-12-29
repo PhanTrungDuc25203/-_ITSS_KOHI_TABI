@@ -56,6 +56,8 @@ let initWebRoutes = (app) => {
     router.get('/api/get-max-amenity-id', amenitiesController.getMaxAmenityId);
     router.get('/api/get-max-service-id', servicesController.getMaxServiceId);
 
+    router.put('/api/update-coffee-shop', coffeeShopController.updateCoffeeShop);
+
 
 
     return app.use("/", router);
