@@ -51,7 +51,18 @@ let addServiceToCoffeeShop = async (req, res) => {
     }
 }
 
+let getMaxServiceId = async (req, res) => {
+    try {
+        let maxId = await db.Service.max('id');
+        return res.json({ maxId });
+    } catch(error) {
+        console.error('Error fetching max service id:', error);
+        throw error;
+    }
+}
+
 module.exports = {
     addService: addService,
     addServiceToCoffeeShop: addServiceToCoffeeShop,
+    getMaxServiceId: getMaxServiceId,
 }

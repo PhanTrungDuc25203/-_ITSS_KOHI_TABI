@@ -51,7 +51,18 @@ let addAmenityToCoffeeShop = async (req, res) => {
     }
 }
 
+let getMaxAmenityId = async (req, res) => {
+    try {
+        let maxId = await db.Amenity.max('id');
+        return res.json({ maxId });
+    } catch(error) {
+        console.error('Error fetching max amenity id:', error);
+        throw error;
+    }
+}
+
 module.exports = {
     addAmenity: addAmenity,
     addAmenityToCoffeeShop: addAmenityToCoffeeShop,
+    getMaxAmenityId: getMaxAmenityId,
 }
