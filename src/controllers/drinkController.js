@@ -63,8 +63,30 @@ let updateDrink = async (req, res) => {
     }
 };
 
+let removeIncludeDrink = async (req, res) => {
+    try {
+        let did = req.body.did;
+        let cid = req.body.cid;
+
+        let includeDrink = await db.Include_drink.findOne({
+            where: { did: did, cid: cid }
+        });
+
+        if (includeDrink) {
+            await includeDrink.destroy();
+        } else {
+            return res.status(404).json({ error: 'Include drink not found' });
+        }
+
+    } catch (error) {
+        console.error('Error removing include drink:', error);
+        return res.status(500).json({ error: error.message });
+    }
+}
+
 module.exports = {
     getMaxDrinkId: getMaxDrinkId,
     getDrinkById: getDrinkById,
-    updateDrink: updateDrink
+    updateDrink: updateDrink,
+    removeIncludeDrink: removeIncludeDrink
 }
