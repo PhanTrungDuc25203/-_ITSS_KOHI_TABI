@@ -34,7 +34,7 @@ let addAmenityToCoffeeShop = async (req, res) => {
         let aid = req.body.aid;
         let price = req.body.price;
 
-        let newIncludeAmenity = await db.Include_amenity.create ({
+        let newIncludeAmenity = await db.Include_amenity.create({
             cid: cid,
             aid: aid,
             price: price,
@@ -46,8 +46,9 @@ let addAmenityToCoffeeShop = async (req, res) => {
         })
 
     } catch (error) {
+
         console.error('Error adding amenity:', error);
-        res.status(500).json({ error: error.message });
+        res.status(502).json({ error: error.message });
     }
 }
 
@@ -55,14 +56,66 @@ let getMaxAmenityId = async (req, res) => {
     try {
         let maxId = await db.Amenity.max('id');
         return res.json({ maxId });
-    } catch(error) {
+    } catch (error) {
         console.error('Error fetching max amenity id:', error);
         throw error;
     }
 }
 
+let updateAmenity = async (req, res) => {
+    try {
+        let aid = req.body.aid;
+
+        let amenity = await db.Amenity.findOne({
+            where: {
+                id: aid
+            }
+        });
+
+        if (!amenity) {
+            return res.status(404).json({
+                error: 'Amenity not found'
+            });
+        }
+
+        amenity.name_eng = req.body.name_eng;
+        amenity.name_jap = req.body.name_jap;
+
+        await amenity.save()
+
+    } catch (error) {
+        console.error('Error updating amenity:', error);
+        res.status(500).json({ error: error.message });
+    }
+}
+
+let removeIncludeAmenity = async (req, res) => {
+    try {
+        let aid = req.body.aid;
+        let cid = req.body.cid;
+
+        let includeAmenity = await db.Include_amenity.findOne({
+            where: { aid: aid, cid: cid }
+        });
+
+        if (includeAmenity) {
+            await includeAmenity.destroy();
+        } else {
+            return res.status(404).json({ error: 'Include amenity not found' });
+        }
+
+    } catch (error) {
+        console.error('Error removing include amenity:', error);
+        return res.status(500).json({ error: error.message });
+    }
+}
+
+
+
 module.exports = {
     addAmenity: addAmenity,
     addAmenityToCoffeeShop: addAmenityToCoffeeShop,
     getMaxAmenityId: getMaxAmenityId,
+    updateAmenity: updateAmenity,
+    removeIncludeAmenity: removeIncludeAmenity,
 }

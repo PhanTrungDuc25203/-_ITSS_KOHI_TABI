@@ -60,6 +60,8 @@ let initWebRoutes = (app) => {
     router.get('/api/get-drink-by-id/:id', drinkController.getDrinkById);
     router.put('/api/update-drink', drinkController.updateDrink);
     router.put('/api/remove-included-drink', drinkController.removeIncludeDrink);
+    router.put('/api/update-amenity', amenitiesController.updateAmenity);
+    router.put('/api/remove-included-amenity', amenitiesController.removeIncludeAmenity);
 
     return app.use("/", router);
 }
