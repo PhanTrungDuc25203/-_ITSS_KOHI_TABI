@@ -4,6 +4,7 @@ import userController from "../controllers/userController";
 import coffeeShopController from "../controllers/coffeeShopController";
 import amenitiesController from "../controllers/amenitiesController";
 import servicesController from "../controllers/servicesController";
+import drinkController from "../controllers/drinkController";
 
 let router = express.Router();
 
@@ -49,8 +50,20 @@ let initWebRoutes = (app) => {
     router.post('/api/add-service', servicesController.addService);
     router.post('/api/add-service-to-coffee-shop', servicesController.addServiceToCoffeeShop);
     router.get('/api/getalluser',userController.getAllUser);
+    router.get('/api/get-coffee-shop-data/:id', coffeeShopController.getCoffeeShopData);
 
+    router.get('/api/get-max-drink-id', drinkController.getMaxDrinkId);
+    router.get('/api/get-max-amenity-id', amenitiesController.getMaxAmenityId);
+    router.get('/api/get-max-service-id', servicesController.getMaxServiceId);
 
+    router.put('/api/update-coffee-shop', coffeeShopController.updateCoffeeShop);
+    router.get('/api/get-drink-by-id/:id', drinkController.getDrinkById);
+    router.put('/api/update-drink', drinkController.updateDrink);
+    router.put('/api/remove-included-drink', drinkController.removeIncludeDrink);
+    router.put('/api/update-amenity', amenitiesController.updateAmenity);
+    router.put('/api/remove-included-amenity', amenitiesController.removeIncludeAmenity);
+    router.put('/api/update-service', servicesController.updateService);
+    router.put('/api/remove-included-service', servicesController.removeIncludeService);
 
     return app.use("/", router);
 }

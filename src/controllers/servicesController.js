@@ -51,7 +51,68 @@ let addServiceToCoffeeShop = async (req, res) => {
     }
 }
 
+let getMaxServiceId = async (req, res) => {
+    try {
+        let maxId = await db.Service.max('id');
+        return res.json({ maxId });
+    } catch(error) {
+        console.error('Error fetching max service id:', error);
+        throw error;
+    }
+}
+
+let updateService = async (req, res) => {
+    try {
+        let sid = req.body.sid;
+
+        let service = await db.Service.findOne({
+            where: {
+                id: sid
+            }
+        });
+
+        if (!service) {
+            return res.status(404).json({
+                error: 'Service not found'
+            });
+        }
+
+        service.name_eng = req.body.name_eng;
+        service.name_jap = req.body.name_jap;
+
+        await service.save()
+
+    } catch (error) {
+        console.error('Error updating service:', error);
+        res.status(500).json({ error: error.message });
+    }
+}
+
+let removeIncludeService = async (req, res) => {
+    try {
+        let sid = req.body.sid;
+        let cid = req.body.cid;
+
+        let includeService = await db.Include_service.findOne({
+            where: { sid: sid, cid: cid }
+        });
+
+        if (includeService) {
+            await includeService.destroy();
+        } else {
+            return res.status(404).json({ error: 'Include service not found' });
+        }
+
+    } catch (error) {
+        console.error('Error removing include service:', error);
+        return res.status(500).json({ error: error.message });
+    }
+}
+
 module.exports = {
     addService: addService,
     addServiceToCoffeeShop: addServiceToCoffeeShop,
+    getMaxServiceId: getMaxServiceId,
+    updateService: updateService,
+    removeIncludeService: removeIncludeService,
 }

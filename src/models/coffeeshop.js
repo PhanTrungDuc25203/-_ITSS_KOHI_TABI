@@ -20,6 +20,20 @@ module.exports = (sequelize, DataTypes) => {
                 as: 'drinks'
             });
 
+            CoffeeShop.belongsToMany(models.Amenity, {
+                through: models.Include_amenity,
+                foreignKey: 'cid',
+                otherKey: 'aid',
+                as: 'amenities'
+            });
+
+            CoffeeShop.belongsToMany(models.Service, {
+                through: models.Include_service,
+                foreignKey: 'cid',
+                otherKey: 'sid',
+                as: 'services'
+            });
+
             CoffeeShop.belongsToMany(models.User, {
                 through: models.Favorite_list,
                 foreignKey: 'cid',

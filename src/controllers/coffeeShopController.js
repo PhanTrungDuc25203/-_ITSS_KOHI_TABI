@@ -1,5 +1,6 @@
 import { at, get } from 'lodash';
 import db from '../models/index';
+import e from 'express';
 
 let getAllCoffeeShops = async (req, res) => {
     try {
@@ -12,6 +13,49 @@ let getAllCoffeeShops = async (req, res) => {
     } catch (error) {
         console.error('Error fetching coffee shops:', error);
         res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+let getCoffeeShopData = async (req, res) => {
+    try {
+        let id = req.params.id;
+        let data = await db.CoffeeShop.findOne({
+            where: { cid: id },
+            include: [
+                {
+                    model: db.Drink,
+                    through: {
+                        model: db.Include_drink,
+                        attributes: ['price']
+                    },
+                    as: 'drinks'
+                },
+                {
+                    model: db.Amenity,
+                    through: {
+                        model: db.Include_amenity,
+                        attributes: ['price']
+                    },
+                    as: 'amenities'
+                },
+                {
+                    model: db.Service,
+                    through: {
+                        model: db.Include_service,
+                        attributes: ['price']
+                    },
+                    as: 'services'
+                }
+            ]
+        });
+        if (data) {
+            return res.json({ data, errCode: 0 });
+        } else {
+            return res.status(404).json({ error: 'Coffee shop not found' });
+        }
+    } catch (error) {
+        console.error('Error fetching coffee shop:', error);
+        res.status(500).json({ error: error.message });
     }
 };
 
@@ -274,6 +318,58 @@ let getMaxDrinkId = async () => {
     }
 }
 
+let updateCoffeeShop = async (req, res) => {
+    try {
+        let id = req.body.cid;
+        let name = req.body.name;
+        let provinceId = req.body.province_id;
+        let address = req.body.address;
+        let openHour = req.body.open_hour;
+        let closeHour = req.body.close_hour;
+        let minPrice = req.body.min_price;
+        let maxPrice = req.body.max_price;
+        let desEng = req.body.description_en;
+        let desJap = req.body.description_jp;
+        let style = req.body.style;
+        let picture = req.body.picture;
+
+        let coffeeShop = await db.CoffeeShop.findOne({
+            where: { id: id }
+        });
+
+        if (!coffeeShop) {
+            return res.status(404).json({ error: 'Coffee shop not found' });
+        }
+
+        coffeeShop.name = name;
+        coffeeShop.province_vie = provinceId;
+        coffeeShop.province_jap = provinceId;
+        coffeeShop.address = address;
+        coffeeShop.open_hour = openHour;
+        coffeeShop.close_hour = closeHour;
+        coffeeShop.min_price = minPrice;
+        coffeeShop.max_price = maxPrice;
+        coffeeShop.description_eng = desEng;
+        coffeeShop.description_jap = desJap;
+        coffeeShop.style = style;
+        coffeeShop.picture = picture;
+
+        await coffeeShop.save();
+
+        return res.status(200).json({
+            message: 'Coffee shop updated successfully',
+            coffeeShop,
+            errCode: 0,
+        });
+
+    } catch (error) {
+        console.error('Error updating coffee shop:', error);
+        res.status(500).json({ error: error.message });
+    }
+};
+
+
+
 module.exports = {
     getAllCoffeeShops: getAllCoffeeShops,
     getCoffeeShopById: getCoffeeShopById,
@@ -285,4 +381,6 @@ module.exports = {
     addCoffeeShop: addCoffeeShop,
     getMaxCoffeeShopId: getMaxCoffeeShopId,
     addDrinkToCoffeeShop: addDrinkToCoffeeShop,
+    getCoffeeShopData: getCoffeeShopData,
+    updateCoffeeShop: updateCoffeeShop,
 };
