@@ -83,6 +83,7 @@ let searchCoffeShop = async (req, res) => {
         let style = req.query.style;
         let service = req.query.service;
         let amenity = req.query.amenity;
+        let uid = req.query.uid;
 
 
 
@@ -95,7 +96,8 @@ let searchCoffeShop = async (req, res) => {
             waiting_time,
             style,
             service,
-            amenity
+            amenity,
+            uid
         };
 
         // Xử lý tìm kiếm quán cà phê thông qua service
@@ -336,6 +338,21 @@ let getAllUser = async (req, res) => {
         })
     }
 }
+
+let getRecent = async (req, res) => {
+    try {
+        let uid = req.query.uid;
+        let response = await userService.getRecentService(uid);
+        return res.status(200).json(response);
+    } catch (e) {
+        console.log(e);
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: `Get user's recent error!`
+        })
+    }
+}
+
 module.exports = {
     handleLogin: handleLogin,
     saveUserPreference: saveUserPreference,
@@ -351,5 +368,6 @@ module.exports = {
     deleteCoffeeShopByAdmin: deleteCoffeeShopByAdmin,
     getMostFavoriteShop: getMostFavoriteShop,
     getUserPreference: getUserPreference,
-    getAllUser: getAllUser
+    getAllUser: getAllUser,
+    getRecent:getRecent
 }

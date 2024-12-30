@@ -12,6 +12,8 @@ module.exports = (sequelize, DataTypes) => {
             });
             CoffeeShop.hasMany(models.Include_amenity, { foreignKey: 'cid', as: 'includeAmenity' })
             CoffeeShop.hasMany(models.Include_service, { foreignKey: 'cid', as: 'includeService' })
+            CoffeeShop.hasMany(models.Search, { foreignKey: 'cid', as: 'coffeeShopSearch' })
+
 
             CoffeeShop.belongsToMany(models.Drink, {
                 through: models.Include_drink,

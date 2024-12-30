@@ -389,7 +389,8 @@ let searchCoffeShopService = async (criteria) => {
                 waiting_time,
                 style,
                 service,
-                amenity
+                amenity,
+                uid
             } = criteria;
 
             // Xây dựng điều kiện where dựa trên các thuộc tính được truyền vào
@@ -433,6 +434,19 @@ let searchCoffeShopService = async (criteria) => {
                     'close_hour', 'waiting_time', 'style'
                 ]
             });
+
+            if (coffeShops.length > 0) {
+                // Chuẩn bị dữ liệu để thêm vào bảng Searches
+                let searchRecords = coffeShops.map(shop => ({
+                    uid: uid,
+                    cid: shop.cid,
+                    createdAt: new Date(),
+                    updatedAt: new Date()
+                }));
+
+                // Thêm dữ liệu vào bảng Searches
+                await db.Search.bulkCreate(searchRecords);
+            }
 
             // Resolve với kết quả tìm kiếm
             resolve(coffeShops);
@@ -832,6 +846,44 @@ let getAllUser = async () => {
     });
 };
 
+let getRecentService = async (uid) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            
+        
+            let searchResults = await db.Search.findAll({
+                where: { uid: uid },
+                attributes: ['cid'] // Chỉ lấy trường cid
+            });
+
+            // Lấy danh sách cid từ kết quả truy vấn
+            let cids = searchResults.map(search => search.cid);
+
+            // Lấy thông tin chi tiết của các cửa hàng cà phê từ bảng CoffeeShop
+            let coffeeShops = await db.CoffeeShop.findAll({
+                where: {
+                    cid: cids // Chỉ lấy các cửa hàng có cid trong danh sách cids
+                }
+            });
+
+
+
+
+            resolve({
+                coffeeShops: coffeeShops,
+                errCode: 0,
+                errMessage: 'Get recent successfully!'
+            });
+
+
+        } catch (error) {
+            reject(error);
+        }
+    });
+};
+
+
+
 module.exports = {
     handleLoginService: handleLoginService,
     saveUserPreferenceService: saveUserPreferenceService,
@@ -848,4 +900,5 @@ module.exports = {
     getMostFavoriteShopService: getMostFavoriteShopService,
     getUserPreferenceService: getUserPreferenceService,
     getAllUser: getAllUser,
+    getRecentService: getRecentService,
 }

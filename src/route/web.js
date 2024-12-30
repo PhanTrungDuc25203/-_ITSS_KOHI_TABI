@@ -65,6 +65,10 @@ let initWebRoutes = (app) => {
     router.put('/api/update-service', servicesController.updateService);
     router.put('/api/remove-included-service', servicesController.removeIncludeService);
 
+    router.get('/api/getrecent', userController.getRecent);
+
+
+
     return app.use("/", router);
 }
 module.exports = initWebRoutes;
