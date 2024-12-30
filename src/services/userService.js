@@ -320,6 +320,32 @@ let getCoffeeShopForYouService = (email) => {
                         coffeeShopByService.includes(cid) && coffeeShopsByTime.includes(cid)
                     )
 
+                    // Kiểm tra nếu giao rỗng và giảm số mảng giao theo thứ tự ưu tiên
+                    if (coffeeShopIntersection.length === 0) {
+                        coffeeShopIntersection = coffeeShopByDrink.filter(cid =>
+                            coffeeShopByAmenity.includes(cid) &&
+                            coffeeShopByStyle.includes(cid) &&
+                            coffeeShopsByTime.includes(cid)
+                        )
+                    }
+
+                    if (coffeeShopIntersection.length === 0) {
+                        coffeeShopIntersection = coffeeShopByDrink.filter(cid =>
+                            coffeeShopByAmenity.includes(cid) &&
+                            coffeeShopsByTime.includes(cid)
+                        )
+                    }
+
+                    if (coffeeShopIntersection.length === 0) {
+                        coffeeShopIntersection = coffeeShopByDrink.filter(cid =>
+                            coffeeShopsByTime.includes(cid)
+                        )
+                    }
+
+                    if (coffeeShopIntersection.length === 0) {
+                        coffeeShopIntersection = coffeeShopByDrink;
+                    }
+
                     const coffeeShops = await db.CoffeeShop.findAll({
                         where: {
                             cid: coffeeShopIntersection,
@@ -328,12 +354,12 @@ let getCoffeeShopForYouService = (email) => {
 
                     resolve({
                         // user: user,
-                        // coffeeShopByDrink: coffeeShopByDrink,
-                        // coffeeShopByAmenity: coffeeShopByAmenity,
-                        // coffeeShopByStyle: coffeeShopByStyle,
-                        // coffeeShopByService: coffeeShopByService,
-                        // data: coffeeShopIntersection,
-                        // coffeeShopsByTime: coffeeShopsByTime,
+                        coffeeShopByDrink: coffeeShopByDrink,
+                        coffeeShopByAmenity: coffeeShopByAmenity,
+                        coffeeShopByStyle: coffeeShopByStyle,
+                        coffeeShopByService: coffeeShopByService,
+                        coffeeShopsByTime: coffeeShopsByTime,
+                        data: coffeeShopIntersection,
                         coffeeShops: coffeeShops,
                         errCode: 0,
                         errMessage: 'Fetched coffee shops successfully!',
@@ -740,17 +766,17 @@ let getUserPreferenceService = (email) => {
 
                     let amenityDetails = await db.Amenity.findAll({
                         where: { aid: user.favoriteAmenity.map(a => a.aid) },
-                        attributes: ['name_eng', 'name_jap']
+                        attributes: ['aid', 'name_eng', 'name_jap']
                     })
 
                     let drinkDetails = await db.Drink.findAll({
                         where: { did: user.favoriteDrink.map(d => d.did) },
-                        attributes: ['name_eng', 'name_ja']
+                        attributes: ['did', 'name_eng', 'name_ja']
                     })
 
                     let serviceDetails = await db.Service.findAll({
                         where: { sid: user.favoriteService.map(s => s.sid) },
-                        attributes: ['name_eng', 'name_jap']
+                        attributes: ['sid', 'name_eng', 'name_jap']
                     })
 
                     resolve({
