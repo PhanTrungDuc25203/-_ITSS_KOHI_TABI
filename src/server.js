@@ -16,10 +16,9 @@ let app = express();
 app.use(helmet());
 app.use(morgan('combined'));
 app.use(compression());
-// app.use(cors({ origin: true }));
 app.use(cors({
     credentials: true,
-    origin: true,
+    origin: 'https://kohitabi.vercel.app',
 }));
 
 app.use(function (req, res, next) {
@@ -38,11 +37,6 @@ app.use(function (req, res, next) {
     next();
 });
 
-// app.use(cors());
-
-//config app
-// app.use(bodyParser.json());
-// app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
