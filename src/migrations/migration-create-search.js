@@ -26,13 +26,6 @@ module.exports = {
                 type: Sequelize.DATE
             }
         });
-
-        // Thêm ràng buộc duy nhất cho cặp uid và cid
-        await queryInterface.addConstraint('Searches', {
-            fields: ['uid', 'cid'], // Các cột cần ràng buộc duy nhất
-            type: 'unique',
-            name: 'unique_uid_cid_constraint' // Tên ràng buộc
-        });
     },
     async down(queryInterface, Sequelize) {
         await queryInterface.dropTable('Searches');

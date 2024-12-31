@@ -431,7 +431,7 @@ let searchCoffeShopService = async (criteria) => {
                 attributes: [
                     'cid', 'name', 'province_vie', 'province_jap',
                     'min_price', 'max_price', 'open_hour',
-                    'close_hour', 'waiting_time', 'style'
+                    'close_hour', 'waiting_time', 'style', 'picture'
                 ]
             });
 
@@ -448,7 +448,6 @@ let searchCoffeShopService = async (criteria) => {
                 await db.Search.bulkCreate(searchRecords);
             }
 
-            // Resolve với kết quả tìm kiếm
             resolve(coffeShops);
         } catch (error) {
             console.error("Error in searchCoffeShopService: ", error);
