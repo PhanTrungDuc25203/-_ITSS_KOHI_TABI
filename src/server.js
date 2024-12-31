@@ -17,10 +17,7 @@ app.use(helmet());
 app.use(morgan('combined'));
 app.use(compression());
 // app.use(cors({ origin: true }));
-app.use(cors({
-    credentials: true,
-    origin: process.env.URL_REACT_SERVER,
-}));
+app.use(cors());
 
 app.use(function (req, res, next) {
     //chỉ cho server hoạt động ở cổng 3000 có thể gọi api từ server Node
